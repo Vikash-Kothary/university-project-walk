@@ -14,6 +14,9 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+    public  void GunPark(){}
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
