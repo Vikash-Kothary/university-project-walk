@@ -34,10 +34,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    
-    public void onGunPark(int Gunpark){
-        //개소리
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
