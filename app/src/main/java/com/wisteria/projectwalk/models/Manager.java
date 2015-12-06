@@ -1,7 +1,7 @@
 package com.wisteria.projectwalk.models;
 
 
-public class Manager {
+public class Manager implements LeaderboardDataSource {
     private static Manager sharedInstance = new Manager();
 
     public static Manager getInstance() {
