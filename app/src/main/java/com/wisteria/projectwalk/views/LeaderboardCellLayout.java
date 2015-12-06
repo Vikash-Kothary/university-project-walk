@@ -2,13 +2,14 @@ package com.wisteria.projectwalk.views;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.LinearLayout;
 
 /**
  * Created by martinkubat on 03/12/15.
  */
-public class LeaderboardCellView extends View {
+public class LeaderboardCellLayout extends LinearLayout {
 
-    public LeaderboardCellView(Context context) {
+    public LeaderboardCellLayout(Context context) {
         super(context);
     }
 }

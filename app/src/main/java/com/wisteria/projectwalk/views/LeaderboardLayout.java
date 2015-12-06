@@ -11,9 +11,11 @@ import android.widget.TextView;
 /**
  * Created by martinkubat on 03/12/15.
  */
-public class LeaderboardView extends LinearLayout {
+public class LeaderboardLayout extends LinearLayout {
 
-    public LeaderboardView(Context context) {
+
+
+    public LeaderboardLayout(Context context) {
         super(context);
         setBackgroundColor(Color.BLUE);
 

@@ -2,20 +2,18 @@ package com.wisteria.projectwalk.controllers;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.LinearLayout;
 
-import com.wisteria.projectwalk.models.DataHandler;
 import com.wisteria.projectwalk.R;
-import com.wisteria.projectwalk.views.LeaderboardView;
+import com.wisteria.projectwalk.views.LeaderboardLayout;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
  */
 public class MainActivity extends Activity {
 
-    private LinearLayout leaderboardContainerView;
-    private LeaderboardView leaderboardView;
+    private LinearLayout leaderboardContainerLayout;
+    private LeaderboardLayout leaderboardLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +21,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); 
+        setContentView(R.layout.activity_main);
 
-        leaderboardContainerView = (LinearLayout) findViewById(R.id.leaderboard_view);
-        leaderboardView = new LeaderboardView(this);
-        leaderboardContainerView.addView(leaderboardView);
+        leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+        leaderboardLayout = new LeaderboardLayout(this);
+        leaderboardContainerLayout.addView(leaderboardLayout);
 
 
     }
