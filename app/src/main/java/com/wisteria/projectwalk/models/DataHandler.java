@@ -1,4 +1,4 @@
-package com.wisteria.projectwalk;
+package com.wisteria.projectwalk.models;
 
 import android.app.ProgressDialog;
 import android.content.Context;

@@ -1,12 +1,11 @@
-package com.wisteria.projectwalk;
+package com.wisteria.projectwalk.controllers;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+
+import com.wisteria.projectwalk.models.DataHandler;
+import com.wisteria.projectwalk.R;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
