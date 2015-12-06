@@ -13,6 +13,8 @@ import android.widget.TextView;
  */
 public class MainActivity extends Activity {
 
+    private View leaderboardView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,23 +25,8 @@ public class MainActivity extends Activity {
 
         final DataHandler handle = new DataHandler(MainActivity.this);
 
-        final EditText countryName = (EditText) findViewById(R.id.countryName);
-        final EditText yearValue = (EditText) findViewById(R.id.yearValue);
-        final TextView textView = (TextView) findViewById(R.id.textView);
+        leaderboardView = (View) findViewById(R.id.leaderboard_view);
 
-        Button data = (Button) findViewById(R.id.loadData);
-        data.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String country = countryName.getText().toString();
-                int year = Integer.parseInt(yearValue.getText().toString());
-                textView.setText(Html.fromHtml(handle.printData(country, year)));
-
-            }
-
-        });
 
     }
 }

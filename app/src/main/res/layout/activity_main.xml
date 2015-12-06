@@ -3,40 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <EditText
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/countryName"
-        android:hint="Country"
-        android:layout_gravity="left|top" />
-    <Button
-        android:layout_width="178dp"
-        android:layout_height="92dp"
-        android:text="Load data"
-        android:id="@+id/loadData"
-        android:layout_gravity="right|top" />
 
-    <EditText
-        android:layout_width="127dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/yearValue"
-        android:hint="Year"
-        android:layout_gravity="left|top"
-        android:layout_marginTop="50dp" />
-
-    <ScrollView
+    <View
+        android:id="@+id/leaderboard_view"
         android:layout_width="match_parent"
-        android:layout_height="468dp"
-        android:id="@+id/scrollView"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp">
+        android:layout_height="70dp"
+        android:background="#00FFFF"
+        ></View>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:singleLine="false"
-            android:id="@+id/textView" />
-    </ScrollView>
 
 </FrameLayout>
