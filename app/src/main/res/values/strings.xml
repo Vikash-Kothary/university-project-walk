@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ProjectWalk</string>
     <string name="action_settings">Settings</string>
+    <string name="leaderboard_ranking_header">Ranking</string>
+    <string name="leaderboard_country_header">Country</string>
+    <string name="leaderboard_bar_header"></string>
 </resources>

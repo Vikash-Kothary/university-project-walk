@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.wisteria.projectwalk.models.LeaderboardDataSource;
+import com.wisteria.projectwalk.models.Manager;
+
 import java.util.ArrayList;
 
 
@@ -18,6 +21,7 @@ public class LeaderboardLayout extends LinearLayout {
     private Context context;
     private LeaderboardRowLayout headerRowLayout;
     private ArrayList<LeaderboardRowLayout> rowLayouts;
+    private LeaderboardDataSource dataSource = Manager.getInstance();
 
     public LeaderboardLayout(Context context) {
         super(context);
@@ -34,7 +38,13 @@ public class LeaderboardLayout extends LinearLayout {
     }
 
     private void setupHeader() {
-//        headerRowLayout = new LeaderboardRowLayout(this, "")
-//        addView(headerRowLayout);
+        headerRowLayout = new LeaderboardRowLayout(
+                context,
+                "Ranking",
+                "Country",
+                ""
+        );
+
+        addView(headerRowLayout);
     }
 }
