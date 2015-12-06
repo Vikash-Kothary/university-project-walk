@@ -9,7 +9,30 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="#00FFFF"
-        ></View>
+        android:layout_gravity="right|center_vertical"></View>
+
+    <LinearLayout
+        android:layout_width="385dp"
+        android:layout_height="200dp"
+        android:background="#00FF7F"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Tree Gap"
+            android:textColor="#FFFFFF"
+            android:id="@+id/textView"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal|top" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
 
 
 </FrameLayout>
