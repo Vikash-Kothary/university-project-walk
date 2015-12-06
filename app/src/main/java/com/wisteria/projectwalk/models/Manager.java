@@ -10,7 +10,9 @@ public class Manager implements LeaderboardDataSource {
 
     private int currentYear;
     private Country usersCountry;
-    private DataHandler.Category category;
+
+
+    private Category category;
 
     private Manager() {
 
@@ -25,14 +27,6 @@ public class Manager implements LeaderboardDataSource {
         this.currentYear = currentYear;
     }
 
-    public DataHandler.Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(DataHandler.Category category) {
-        this.category = category;
-    }
-
     public Entry entryForRanking(int ranking) {
 
         return null;
@@ -42,5 +36,8 @@ public class Manager implements LeaderboardDataSource {
 
         return null;
     }
-    
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
