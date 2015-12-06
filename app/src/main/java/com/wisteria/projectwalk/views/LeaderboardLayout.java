@@ -34,11 +34,7 @@ public class LeaderboardLayout extends LinearLayout {
     }
 
     private void setupHeader() {
-        headerRowLayout = new LeaderboardRowLayout(context);
-        addView(headerRowLayout);
+//        headerRowLayout = new LeaderboardRowLayout(this, "")
+//        addView(headerRowLayout);
     }
-
-
-
-
 }
