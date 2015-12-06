@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <EditText
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/countryName"
+        android:hint="Country"
+        android:layout_gravity="left|top" />
+    <Button
+        android:layout_width="178dp"
+        android:layout_height="92dp"
+        android:text="Load data"
+        android:id="@+id/loadData"
+        android:layout_gravity="right|top" />
 
-    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
-        android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
+    <EditText
+        android:layout_width="127dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/yearValue"
+        android:hint="Year"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="50dp" />
 
-        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="468dp"
+        android:id="@+id/scrollView"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp">
 
-    </android.support.design.widget.AppBarLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:singleLine="false"
+            android:id="@+id/textView" />
+    </ScrollView>
 
-    <include layout="@layout/content_main" />
-
-    <android.support.design.widget.FloatingActionButton android:id="@+id/fab"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
-
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

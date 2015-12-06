@@ -1,4 +1,4 @@
-package com.teamwisteria.appname;
+package com.wisteria.projectwalk;
 
 import org.junit.Test;
 
