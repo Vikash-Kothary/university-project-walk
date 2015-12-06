@@ -16,6 +16,18 @@ import java.util.ArrayList;
 
 public class DataHandler {
 
+    public enum Category{
+
+        ForestArea("Forest"), C02Emissions("C02"), FossilFuel("Fossil");
+
+        String indicator;
+
+        Category(String indicator){
+            this.indicator = indicator;
+        }
+    }
+
+
     /** An ArrayList containing DataSets, sets are added post AsynTask execution */
     ArrayList<DataSet> allData = new ArrayList<>();
 

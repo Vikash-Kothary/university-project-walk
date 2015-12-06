@@ -8,6 +8,9 @@ import java.util.ArrayList;
  */
 public class Country {
 
+
+    private int ranking;
+
     /** The name of the country */
     private String countryName;
 
