@@ -7,17 +7,21 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by martinkubat on 03/12/15.
  */
 public class LeaderboardLayout extends LinearLayout {
 
-
+    private Context context;
+    private LeaderboardRowLayout headerRowLayout;
+    private ArrayList<LeaderboardRowLayout> rowLayouts;
 
     public LeaderboardLayout(Context context) {
         super(context);
-        setBackgroundColor(Color.BLUE);
+        this.context = context;
 
         setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -26,7 +30,12 @@ public class LeaderboardLayout extends LinearLayout {
 
         setOrientation(LinearLayout.VERTICAL);
 
-        addView(new TextView(context));
+        setupHeader(); 
+    }
+
+    private void setupHeader() {
+        headerRowLayout = new LeaderboardRowLayout(context);
+        addView(headerRowLayout);
     }
 
 
