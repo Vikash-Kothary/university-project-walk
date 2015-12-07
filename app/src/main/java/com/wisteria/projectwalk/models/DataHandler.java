@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Set;
 
 public class DataHandler {
 
-    LinkedHashMap linkedHashMap = new LinkedHashMap();
+    HashMap hashMap = new HashMap();
 
     /** All the indicators that will be requested */
     String[] indicators = new String[]{"/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000", "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
@@ -51,9 +52,16 @@ public class DataHandler {
     }
 
 
-    protected void testHashMap() {
 
-        Set set = linkedHashMap.entrySet();
+
+
+
+
+
+
+    protected void completedLoad() {
+
+        Set set = hashMap.entrySet();
         Iterator iterator = set.iterator();
 
         while (iterator.hasNext()) {
@@ -67,8 +75,8 @@ public class DataHandler {
 
         //example
 
-        if (linkedHashMap.containsKey("Fossil2013")){
-            DataSet dataSet = (DataSet) linkedHashMap.get("Forest2012");
+        if (hashMap.containsKey("Fossil2013")){
+            DataSet dataSet = (DataSet) hashMap.get("Forest2012");
 
         for (Entry entry : dataSet.getEntries()) {
             Log.e("COUNTRY ", entry.getCountry().getCountryName());
@@ -125,12 +133,12 @@ public class DataHandler {
                         if(!value.equals("null")) {
 
                             String key = dataIndicator+year;
-                            if (!linkedHashMap.containsKey(key)) {
-                                linkedHashMap.put(key, new DataSet());
+                            if (!hashMap.containsKey(key)) {
+                                hashMap.put(key, new DataSet());
 
                             }
 
-                            DataSet set = (DataSet) linkedHashMap.get(key);
+                            DataSet set = (DataSet) hashMap.get(key);
 //                            set.addEntry(new Entry(new Country(country)));
                         }
 
@@ -148,7 +156,9 @@ public class DataHandler {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            testHashMap();
+            if(AsyncCounter == indicators.length) {
+                testHashMap();
+            }
         }
     }
 

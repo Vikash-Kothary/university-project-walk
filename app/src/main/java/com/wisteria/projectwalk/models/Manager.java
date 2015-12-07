@@ -15,6 +15,8 @@ public class Manager implements LeaderboardDataSource {
     private static Manager sharedInstance = new Manager();
     private HashMap<String, ArrayList<Entry>> allEntries;
 
+
+
     public static Manager getInstance() {
         return sharedInstance;
     }
@@ -29,6 +31,9 @@ public class Manager implements LeaderboardDataSource {
 
 
     }
+
+
+
 
     public int getCurrentYear() {
         return currentYear;
@@ -81,6 +86,8 @@ public class Manager implements LeaderboardDataSource {
      */
     public void populateEntries(Category category, int currentYear) {
         // get data
+        ArrayList<Entry> entries =
+        allEntries.put(category.type+currentYear, entries);
         // sort
     }
 
