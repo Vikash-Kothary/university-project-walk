@@ -38,14 +38,33 @@ public class Manager implements LeaderboardDataSource {
         this.currentYear = currentYear;
     }
 
+    /**
+     * Returns the entry at a ranking
+     * @param ranking (int)
+     * @return the entry
+     */
     public Entry entryForRanking(int ranking) {
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+
+        if (entries == null) {
+            populateEntries(category, currentYear);
+        }
+
         return (Entry) entries.get(ranking - 1);
 
     }
 
+    /**
+     * Returns the entry for a country
+     * @param country (Country)
+     * @return the entry
+     */
     public Entry entryForCountry(Country country) {
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+
+        if (entries == null) {
+            populateEntries(category, currentYear);
+        }
 
         for (Entry entry: entries) {
             if (entry.getCountry().equals(country))
@@ -53,6 +72,16 @@ public class Manager implements LeaderboardDataSource {
         }
 
         return null;
+    }
+
+    /**
+     * Gathers all the entries for a particular categore and year
+     * @param category {Category}
+     * @param currentYear {int}
+     */
+    public void populateEntries(Category category, int currentYear) {
+        // get data
+        // sort
     }
 
     public void setCategory(Category category) {

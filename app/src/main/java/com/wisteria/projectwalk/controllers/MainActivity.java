@@ -24,8 +24,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DataHandler dataHandler = new DataHandler(this);
-
 
         leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardLayout = new LeaderboardLayout(this);

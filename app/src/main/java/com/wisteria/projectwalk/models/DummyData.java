@@ -8,7 +8,15 @@ import java.util.Random;
 public class DummyData implements LeaderboardDataSource {
     @Override
     public Entry entryForCountry(Country country) {
-        return null;
+        Random random = new Random();
+        Entry entry = new Entry(
+                random.nextInt(15) + 2000,
+                country,
+                random.nextDouble(),
+                random.nextDouble()
+        );
+
+        return entry;
     }
 
     @Override
