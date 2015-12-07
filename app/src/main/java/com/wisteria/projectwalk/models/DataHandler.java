@@ -21,18 +21,6 @@ import java.util.Set;
 
 public class DataHandler {
 
-    public enum Category{
-
-        ForestArea("Forest"), C02Emissions("C02"), FossilFuel("Fossil");
-
-        String indicator;
-
-        Category(String indicator){
-            this.indicator = indicator;
-        }
-    }
-
-
     LinkedHashMap linkedHashMap = new LinkedHashMap();
 
     /** All the indicators that will be requested */
@@ -98,7 +86,7 @@ public class DataHandler {
         String dataIndicator;
         public RetrieveData(Category category){
 
-            dataIndicator = category.indicator;
+            dataIndicator = category.type;
 
         }
         @Override
@@ -143,7 +131,7 @@ public class DataHandler {
                             }
 
                             DataSet set = (DataSet) linkedHashMap.get(key);
-                            set.addEntry(new Entry(new Country(country)));
+//                            set.addEntry(new Entry(new Country(country)));
                         }
 
                     }

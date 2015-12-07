@@ -17,7 +17,6 @@ public class DummyData implements LeaderboardDataSource {
 
         Random random = new Random();
         Entry entry = new Entry(
-                ranking,
                 random.nextInt(15) + 2000,
                 new Country(countries[random.nextInt(countries.length)]),
                 random.nextDouble(),
