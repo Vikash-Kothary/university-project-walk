@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
     private LinearLayout leaderboardContainerLayout;
     private LeaderboardLayout leaderboardLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
