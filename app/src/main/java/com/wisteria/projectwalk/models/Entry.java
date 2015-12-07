@@ -16,6 +16,20 @@ public class Entry {
      */
     private Number value;
 
+    private int ranking;
+    private Country country;
+    private double percentage;
+
+    private double diffPercentage;
+
+    public Entry(int ranking, int year, Country country, double percentage, double diffPercentage) {
+        this.ranking = ranking;
+        this.year = year;
+        this.country = country;
+        this.percentage = percentage;
+        this.diffPercentage = diffPercentage;
+    }
+
     /**
      * @param year The year of this Entry.
      * @param value The value, as String, to be converted.
@@ -43,6 +57,22 @@ public class Entry {
      */
     public int getYear(){
         return year;
+    }
+
+
+
+    public Country getCountry() {
+        return country;
+    }
+
+
+
+    public double getDiffPercentage() {
+        return diffPercentage;
+    }
+
+    public double getPercentage() {
+        return percentage;
     }
 
 }

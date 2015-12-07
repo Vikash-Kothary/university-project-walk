@@ -11,11 +11,16 @@ public class Country {
 
     private int ranking;
 
+    public Country(String countryName) {
+        this.countryName = countryName;
+    }
+
     /** The name of the country */
     private String countryName;
 
     /** An ArrayList of Entry Objects */
     private ArrayList<Entry> countryData;
+
 
     /**
      * @param name The name of the country
