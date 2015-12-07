@@ -36,8 +36,14 @@ public class MainActivity extends Activity implements ManagerCallback {
 
     @Override
     public void dataIsReady(Category category, int year) {
-        leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
-        leaderboardLayout = new LeaderboardLayout(this);
-        leaderboardContainerLayout.addView(leaderboardLayout);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+                leaderboardLayout = new LeaderboardLayout(this);
+                leaderboardContainerLayout.addView(leaderboardLayout);
+            }
+        });
+
     }
 }

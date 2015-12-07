@@ -86,10 +86,12 @@ public class Manager implements LeaderboardDataSource {
      * @param currentYear {int}
      */
     public void populateEntries(Category category, int currentYear) {
-        // get data
-        ArrayList<Entry> entries =
+        // check if entries are  present in hashmap for this category and year
+        // if not get the data from the api
+        // add it to the hashmap
+        ArrayList<Entry> entries;
         allEntries.put(category.type+currentYear, entries);
-        // sort
+        // sort it with comparator
 
         managerCallback.dataIsReady(category, currentYear);
     }
