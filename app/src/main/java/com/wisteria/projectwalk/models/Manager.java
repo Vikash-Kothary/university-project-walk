@@ -1,5 +1,7 @@
 package com.wisteria.projectwalk.models;
 
+import android.os.Handler;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +17,7 @@ public class Manager implements LeaderboardDataSource {
     private static Manager sharedInstance = new Manager();
     private HashMap<String, ArrayList<Entry>> allEntries;
 
-
+    private ManagerCallback managerCallback;
 
     public static Manager getInstance() {
         return sharedInstance;
@@ -23,8 +25,6 @@ public class Manager implements LeaderboardDataSource {
 
     private int currentYear;
     private Country usersCountry;
-
-
     private Category category;
 
     private Manager() {
@@ -41,6 +41,13 @@ public class Manager implements LeaderboardDataSource {
 
     public void setCurrentYear(int currentYear) {
         this.currentYear = currentYear;
+        populateEntries(category, currentYear);
+
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+        populateEntries(category, currentYear);
     }
 
     /**
@@ -51,9 +58,6 @@ public class Manager implements LeaderboardDataSource {
     public Entry entryForRanking(int ranking) {
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
 
-        if (entries == null) {
-            populateEntries(category, currentYear);
-        }
 
         return (Entry) entries.get(ranking - 1);
 
@@ -67,9 +71,6 @@ public class Manager implements LeaderboardDataSource {
     public Entry entryForCountry(Country country) {
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
 
-        if (entries == null) {
-            populateEntries(category, currentYear);
-        }
 
         for (Entry entry: entries) {
             if (entry.getCountry().equals(country))
@@ -89,11 +90,16 @@ public class Manager implements LeaderboardDataSource {
         ArrayList<Entry> entries =
         allEntries.put(category.type+currentYear, entries);
         // sort
+
+        managerCallback.dataIsReady(category, currentYear);
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+
+
+    public void setManagerCallback(ManagerCallback managerCallback) {
+        this.managerCallback = managerCallback;
     }
+
 
 
 }
