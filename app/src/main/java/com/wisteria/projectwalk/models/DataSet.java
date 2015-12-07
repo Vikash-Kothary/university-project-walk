@@ -1,5 +1,6 @@
 package com.wisteria.projectwalk.models;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -13,8 +14,30 @@ public class DataSet {
     /** A list of Country objects that have valid Entries for this DataSet. */
     ArrayList<Country> countries = new ArrayList<>();
 
+    ArrayList<Entry> entries = new ArrayList<>();
+
+
+
     /** The indicator value of the set of data being stored. */
     String setName;
+
+    public DataSet(){
+
+    }
+
+    public ArrayList<Entry> getEntries(){
+        return entries;
+    }
+
+
+    public void addEntry(Entry entry){
+        entries.add(entry);
+    }
+
+    public String getEntrySize(){
+        return entries.size()+"";
+    }
+
 
     /**
      * @param indicatorName The indicator value.
