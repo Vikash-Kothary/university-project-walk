@@ -1,78 +1,58 @@
 package com.wisteria.projectwalk.controllers;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.wisteria.projectwalk.R;
-import com.wisteria.projectwalk.models.Category;
-import com.wisteria.projectwalk.models.Manager;
 import android.widget.SeekBar;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
 import com.wisteria.projectwalk.models.DataHandler;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
+import com.wisteria.projectwalk.views.LeaderboardChart;
 import com.wisteria.projectwalk.views.LeaderboardLayout;
 import com.wisteria.projectwalk.views.YearSlider;
+
+import java.util.ArrayList;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
  */
 public class MainActivity extends Activity implements ManagerCallback {
 
-    private LinearLayout leaderboardContainerLayout;
-    private LeaderboardLayout leaderboardLayout;
     private Manager manager = Manager.getInstance();
-
     private YearSlider yearSlider;
     private Context context = this;
+    private LeaderboardChart leaderboardChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         manager.setManagerCallback(this);
 
-        Button button = (Button)findViewById(R.id.button_cloud);
-        Button button2 = (Button)findViewById(R.id.button_fuel);
-        Button button3 = (Button)findViewById(R.id.button_tree);
-        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
-        //Set the typeface
-        button.setTypeface(font);
-        button2.setTypeface(font);
-        button3.setTypeface(font);
 
-        View.OnClickListener listner = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch(v.getId()){
-                    case R.id.button_cloud:
-                        manager.setCategory(Category.C02Emissions);
-                        break;
-                    case R.id.button_fuel:
-                        manager.setCategory(Category.ForestArea);
-                        break;
-
-                    case R.id.button_tree:
-                        manager.setCategory(Category.FossilFuel);
-                        break;
-                }
-                //manager.setCategory(Category.);
-            }
-        };
+        LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+        leaderboardChart = new LeaderboardChart(context);
+        leaderboardContainerLayout.addView(leaderboardChart);
 
 
-        //button.setOnClickListener(listner);
+
+
     }
 
     @Override
@@ -80,11 +60,7 @@ public class MainActivity extends Activity implements ManagerCallback {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (leaderboardLayout == null && yearSlider == null) {
-                    leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
-                    leaderboardLayout = new LeaderboardLayout(context);
-                    leaderboardContainerLayout.addView(leaderboardLayout);
-
+                if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
                     yearSlider = new YearSlider(context);
                     yearSliderContainer.addView(yearSlider);
@@ -95,20 +71,5 @@ public class MainActivity extends Activity implements ManagerCallback {
             }
         });
 
-
     }
-
-    public void onClick(View view) {
-        Toast.makeText(this,"C02Emissions",Toast.LENGTH_SHORT).show();
-    }
-
-    public void onClick2(View view) {
-        Toast.makeText(this,"ForestArea",Toast.LENGTH_SHORT).show();
-    }
-
-    public void onClick3(View view) {
-        Toast.makeText(this,"FossilFuel",Toast.LENGTH_SHORT).show();
-    }
-
-
 }
