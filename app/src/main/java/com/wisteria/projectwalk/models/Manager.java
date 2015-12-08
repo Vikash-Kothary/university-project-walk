@@ -142,6 +142,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     };
 
+    public int[] availableYears() {
+        
+    }
 
 
 }
