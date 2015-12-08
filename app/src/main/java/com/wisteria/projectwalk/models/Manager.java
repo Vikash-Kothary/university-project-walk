@@ -29,7 +29,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private int minYear = 2000;
     private int maxYear = 2015;
     private Country usersCountry;
-    private Category category = Category.ForestArea;
+    private Category category = Category.FossilFuel;
 
     private Manager() {
 
@@ -128,8 +128,19 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             Collections.sort(entries, compareEntries);
             Collections.reverse(entries);
 
+            Log.i(pair.getKey() + "", "" + entries.size());
 
-                Log.i(pair.getKey() + "", "" + entries.size());
+            if(entries.get(0).getPercentage() > 100){
+
+                for(Entry entry : entries){
+
+                    entry.setTempPercentage();
+                    entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
+
+                }
+
+            }
+
 
         }
 
@@ -139,8 +150,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     Comparator<Entry> compareEntries = new Comparator<Entry>(){
 
-        public int compare(Entry task1, Entry task2) {
-            return Double.compare(task1.getPercentage(), task2.getPercentage());
+        public int compare(Entry entry1, Entry entry2) {
+            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
         }
     };
 

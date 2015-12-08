@@ -129,7 +129,6 @@ public class DataHandler extends Observable {
                                     ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
                                     entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
 
-//                            set.addEntry(new Entry(new Country(country)));
                                     break;
                                 }
                             }
