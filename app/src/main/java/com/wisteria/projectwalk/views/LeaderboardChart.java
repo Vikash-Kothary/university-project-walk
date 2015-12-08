@@ -1,6 +1,7 @@
 package com.wisteria.projectwalk.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
@@ -63,4 +64,7 @@ public class LeaderboardChart extends HorizontalBarChart {
     }
 
 
+    public void changeColor(Color color) {
+
+    }
 }
