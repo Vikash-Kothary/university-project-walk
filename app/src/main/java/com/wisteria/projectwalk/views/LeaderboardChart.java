@@ -39,24 +39,22 @@ public class LeaderboardChart extends HorizontalBarChart {
     public void refresh() {
         ArrayList<Entry> dataEntries = dataSource.getEntries();
 
-
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(4f, 0));
-        entries.add(new BarEntry(8f, 1));
-        entries.add(new BarEntry(6f, 2));
-        entries.add(new BarEntry(12f, 3));
-        entries.add(new BarEntry(18f, 4));
-        entries.add(new BarEntry(9f, 5));
-
-        BarDataSet dataset = new BarDataSet(entries, "# of Calls");
-
         ArrayList<String> labels = new ArrayList<>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
+        ArrayList<BarEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < dataEntries.size(); i++){
+
+            entries.add(new BarEntry((int)dataEntries.get(i).getPercentage(), i));
+
+            labels.add(dataEntries.get(i).getCountry().getCountryName());
+
+        }
+
+
+        BarDataSet dataset = new BarDataSet(entries, "Ranking");
+
+
+
 
         BarData data = new BarData(labels, dataset);
         setData(data);
