@@ -3,6 +3,7 @@ package com.wisteria.projectwalk.models;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,33 +14,33 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Set;
 
-public class DataHandler {
+public class DataHandler extends Observable {
 
-    public enum Category{
-
-        ForestArea("Forest"), C02Emissions("C02"), FossilFuel("Fossil");
-
-        String indicator;
-
-        Category(String indicator){
-            this.indicator = indicator;
-        }
-    }
+    HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
 
 
-    /** An ArrayList containing DataSets, sets are added post AsynTask execution */
-    ArrayList<DataSet> allData = new ArrayList<>();
+
 
     /** All the indicators that will be requested */
-    String[] indicators = {"/indicators/SP.POP.TOTL?date=2000:2015&format=JSON&per_page=4000","/indicators/NY.GNP.PCAP.CD?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/NY.GNP.ATLS.CD?date=2000:2015&format=JSON&per_page=4000","/indicators/SI.POV.DDAY?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/SI.DST.10TH.10?date=2000:2015&format=JSON&per_page=4000", "/indicators/SI.DST.05TH.20?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/SI.DST.FRST.10?date=2000:2015&format=JSON&per_page=4000", "/indicators/SI.DST.FRST.20?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/SI.DST.02ND.20?date=2000:2015&format=JSON&per_page=4000", "/indicators/SI.DST.03RD.20?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/SI.DST.04TH.20?date=2000:2015&format=JSON&per_page=4000"};
+    String[] indicators = new String[]{
+            "/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000",
+            "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
+            "/indicators/EG.USE.COMM.FO.ZS?date=2000:2015&format=JSON&per_page=4000"
+    };
+    Category[] categories = new Category[]{
+            Category.ForestArea,
+            Category.C02Emissions,
+            Category.FossilFuel
+    };
 
-    ProgressDialog progressDialog;
 
     /** Total number of AsyncTasks running in parallel */
     int AsyncCounter = 0;
@@ -47,85 +48,47 @@ public class DataHandler {
     /**
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
-     * @param context the main activity, used to display progressDialog
      */
-    public DataHandler(Context context){
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("Loading data...");
-        progressDialog.show();
+    public DataHandler(){
 
-        for(String indicator : indicators) {
-            new RetrieveData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,indicator);
-        }
-    }
-
-    /**
-     * Invoked postExecution of AsyncTask
-     * Adds generated DataSet to an ArrayList of datasets
-     * @param dataSet Contains a list of Country objects holding data based on the indicator used
-     */
-    protected void addDataSet(DataSet dataSet){
-        Log.e("ADDED NEW DATA", dataSet.setName + "   WITH SIZE: " + dataSet.countries.size());
-        allData.add(dataSet);
-    }
-
-    /**
-     * To be removed, used to demo loading of data for a specific country and year
-     *
-     * @param pais the name of the country
-     * @param year the year requested
-     * @return a String holding all the data held for country and an specific year
-     */
-    public String printData(String pais, int year) {
-
-
-        String dataLoaded = ("Data for " + "<b>"+ pais + "</b>" + " for the year " + year + " : <br />");
-
-        for (DataSet set : allData) {
-
-            Boolean dataForYear = false;
-
-            dataLoaded += ("<b>Indicator - </b>" + set.getSetName() + "<br />");
-
-                Country country = set.getCountry(pais);
-
-            if(country != null) {
-                for (Entry entry : country.getEntries()) {
-
-                    if(entry.getYear() == year) {
-                        dataLoaded += ("Value - " + entry.getValue() + "<br />");
-                        dataForYear = true;
-                        break;
-                    }
-
-                }
-                if(!dataForYear){
-                    dataLoaded += ("No data for year: " + year + "<br />");
-                }
-
+            for(int i = 0; i<indicators.length;i++) {
+                new RetrieveData(categories[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
             }
-            else{
-                dataLoaded += ("No data for " + pais + "<br />");
-            }
-        }
+    }
 
-        return dataLoaded;
+
+    public HashMap getHashMap (){
+        return hashMap;
+    }
+
+    protected void dataLoaded(){
+
+        setChanged();
+        notifyObservers();
 
     }
+
 
     /**
      * Requests data using the provided indicators
      */
-    private class RetrieveData  extends AsyncTask<String,Void,DataSet> {
+    private class RetrieveData  extends AsyncTask<Object,Void,Void> {
+
+        String dataIndicator;
+        String[] allISOs = Locale.getISOCountries();
+        public RetrieveData(Category category){
+
+            dataIndicator = category.type;
+
+        }
 
         @Override
-        protected DataSet doInBackground(String... params) {
+        protected Void doInBackground(Object... params) {
 
             BufferedReader br;
             URL url;
             String line;
             String newURL = "http://api.worldbank.org/countries" + params[0];
-            DataSet dataSet = new DataSet();
 
             try {
 
@@ -144,33 +107,34 @@ public class DataHandler {
                     JSONArray jsonArray = new JSONArray(line);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
 
-                    String indicator = insideJSON.getJSONObject(0).getJSONObject("indicator").getString("value");
-                    dataSet.setName(indicator);
-
-                    String countryName = insideJSON.getJSONObject(0).getJSONObject("country").getString("value");
-
-                    ArrayList<Entry> entries = new ArrayList<>();
 
                     for (int x = 0; x < insideJSON.length(); x++) {
 
                         JSONObject object = insideJSON.getJSONObject(x);
-                        String tempCountry = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                        String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
+                        String year = object.getString("date");
+                        String value = object.getString("value");
+                        if (!value.equals("null")) {
+                            for (String iso : allISOs) {
 
-                        if(countryName.equals(tempCountry)){
-                            String value = object.getString("value");
-                            if(!value.equals("null")){
-                                entries.add(new Entry(Integer.parseInt(object.getString("date")),value.replaceAll("\"","")));
+                                if (iso.equals(countryISO)) {
+                                    String key = dataIndicator + year;
+                                    if (!hashMap.containsKey(key)) {
+
+                                        hashMap.put(key, new ArrayList<Entry>());
+
+                                    }
+
+                                    ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
+                                    entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
+
+//                            set.addEntry(new Entry(new Country(country)));
+                                    break;
+                                }
                             }
-                        }
-                        else{
-                            Country country = new Country(countryName,entries);
-                            if(country.getSize() > 4) {
-                                dataSet.addCountry(country);
-                            }
-                            //new ArrayList
-                            entries = new ArrayList<>();
-                            countryName = tempCountry;
-                        }
+                    }
+
                     }
                 }
 
@@ -179,19 +143,18 @@ public class DataHandler {
             }
 
             AsyncCounter++;
-            return dataSet;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(DataSet dataSet) {
-            super.onPostExecute(dataSet);
-            addDataSet(dataSet);
-            if(AsyncCounter == indicators.length){
-                progressDialog.cancel();
-                System.gc();
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(AsyncCounter == indicators.length) {
+                dataLoaded();
             }
         }
     }
+
 
 
 

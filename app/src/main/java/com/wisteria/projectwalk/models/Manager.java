@@ -1,21 +1,40 @@
 package com.wisteria.projectwalk.models;
 
+import android.util.Log;
 
-public class Manager implements LeaderboardDataSource {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
+/**
+ * The manager
+ */
+
+public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate, YearSliderDataSource {
     private static Manager sharedInstance = new Manager();
+    private HashMap<String, ArrayList<Entry>> allEntries;
+
+    private ManagerCallback managerCallback;
 
     public static Manager getInstance() {
         return sharedInstance;
     }
 
-    private int currentYear;
+    private int currentYear = 2004;
+    private int minYear = 2000;
+    private int maxYear = 2015;
     private Country usersCountry;
-
-
-    private Category category;
+    private Category category = Category.ForestArea;
 
     private Manager() {
 
+        DataHandler dataHandler = new DataHandler();
+        dataHandler.addObserver(this);
 
     }
 
@@ -25,19 +44,118 @@ public class Manager implements LeaderboardDataSource {
 
     public void setCurrentYear(int currentYear) {
         this.currentYear = currentYear;
-    }
+        populateEntries(category, currentYear);
 
-    public Entry entryForRanking(int ranking) {
-
-        return null;
-    }
-
-    public Entry entryForCountry(Country country) {
-
-        return null;
     }
 
     public void setCategory(Category category) {
         this.category = category;
+        populateEntries(category, currentYear);
     }
+
+    /**
+     * Returns the entry at a ranking
+     * @param ranking (int)
+     * @return the entry
+     */
+    public Entry entryForRanking(int ranking) {
+        Log.i("Manager", "Getting entries for "+category.type + currentYear);
+
+        ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+
+//        if (entries != null) {
+            return entries.get(ranking - 1);
+//        }
+//        return null;
+
+    }
+
+    /**
+     * Returns the entry for a country
+     * @param country (Country)
+     * @return the entry
+     */
+    public Entry entryForCountry(Country country) {
+        ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+
+        if (entries == null)
+            return null;
+
+        for (Entry entry: entries) {
+            if (entry.getCountry().equals(country))
+                return entry;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gathers all the entries for a particular categore and year
+     * @param category {Category}
+     * @param currentYear {int}
+     */
+    public void populateEntries(Category category, int currentYear) {
+        // check if entries are  present in hashmap for this category and year
+        // if not get the data from the api
+        // add it to the hashmap
+        ArrayList<Entry> entries;
+       // allEntries.put(category.type+currentYear, entries);
+        // sort it with comparator
+
+        managerCallback.dataIsReady(category, currentYear);
+    }
+
+
+    public void setManagerCallback(ManagerCallback managerCallback) {
+        this.managerCallback = managerCallback;
+    }
+
+    DataHandler handler;
+    @Override
+    public void update(Observable observable, Object data) {
+        handler = (DataHandler) observable;
+
+        allEntries = (HashMap) handler.getHashMap().clone();
+
+        Iterator iterator = allEntries.entrySet().iterator();
+
+        Log.i("Total number ", ""+allEntries.size());
+
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            ArrayList<Entry> entries = (ArrayList<Entry>) pair.getValue();
+
+            Collections.sort(entries, compareEntries);
+            Collections.reverse(entries);
+
+
+                Log.i(pair.getKey() + "", "" + entries.size());
+
+        }
+
+        managerCallback.dataIsReady(category, currentYear);
+
+    }
+
+    Comparator<Entry> compareEntries = new Comparator<Entry>(){
+
+        public int compare(Entry task1, Entry task2) {
+            return Double.compare(task1.getPercentage(), task2.getPercentage());
+        }
+    };
+
+    public ArrayList<Integer> getAvailableYears() {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+
+        for (int i = minYear; i <= maxYear; i++) {
+            if (allEntries.get(category.type + i) != null)
+                arrayList.add(i);
+        }
+
+        System.out.println("Available years: "+arrayList.toString());
+
+        return arrayList;
+    }
+
+
 }

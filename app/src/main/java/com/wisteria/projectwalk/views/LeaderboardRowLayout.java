@@ -23,6 +23,18 @@ public class LeaderboardRowLayout extends LinearLayout {
         super(context);
 
         setupBefore();
+
+        rankingCell = new TextView(context);
+        rankingCell.setText(""+ranking);
+        addView(rankingCell);
+
+        countryCell = new TextView(context);
+        countryCell.setText(country.getCountryName());
+        addView(countryCell);
+
+        barCell = new BarCellLayout(context, percentage, diffPercentage);
+        addView(barCell);
+
         setupAfter();
     }
     public LeaderboardRowLayout(Context context, String rankingHeader, String countryHeader, String barHeader) {
@@ -37,6 +49,7 @@ public class LeaderboardRowLayout extends LinearLayout {
         countryCell = new TextView(context);
         countryCell.setText(countryHeader);
         addView(countryCell);
+
 
         setupAfter();
     }
@@ -57,6 +70,14 @@ public class LeaderboardRowLayout extends LinearLayout {
         ));
 
         countryCell.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0.3f
+        ));
+
+        if (barCell == null) return;
+
+        barCell.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 0.6f

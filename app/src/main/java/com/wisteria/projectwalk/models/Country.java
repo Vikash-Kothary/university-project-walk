@@ -11,20 +11,15 @@ public class Country {
 
     private int ranking;
 
+    public Country(String countryName) {
+        this.countryName = countryName;
+    }
+
     /** The name of the country */
     private String countryName;
 
     /** An ArrayList of Entry Objects */
     private ArrayList<Entry> countryData;
-
-    /**
-     * @param name The name of the country
-     * @param entries A List of Entry objects, each one holding a year and its value.
-     */
-    public Country(String name, ArrayList<Entry> entries) {
-        countryName = name;
-        countryData = entries;
-    }
 
     /**
      * @return an ArrayList containing all Entry objects for this country

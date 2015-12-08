@@ -15,6 +15,7 @@ public class BarCellLayout extends LinearLayout {
 
     private double percentage;
     private double diffPercent;
+    private TextView textView;
     private int color;
 
     public BarCellLayout(Context context, double percentage, double diffPercent) {
@@ -22,6 +23,10 @@ public class BarCellLayout extends LinearLayout {
 
         this.percentage = percentage;
         this.diffPercent = percentage;
+
+        textView = new TextView(context);
+        textView.setText(""+percentage);
+        addView(textView);
     }
 
 }
