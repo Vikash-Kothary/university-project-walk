@@ -15,7 +15,7 @@ import java.util.Observer;
  * The manager
  */
 
-public class Manager implements LeaderboardDataSource, Observer {
+public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate {
     private static Manager sharedInstance = new Manager();
     private HashMap<String, ArrayList<Entry>> allEntries;
 
