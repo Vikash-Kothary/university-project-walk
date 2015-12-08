@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements ManagerCallback {
             @Override
             public void run() {
                 leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
-                leaderboardLayout = new LeaderboardLayout(this);
+               // leaderboardLayout = new LeaderboardLayout(this);
                 leaderboardContainerLayout.addView(leaderboardLayout);
             }
         });

@@ -18,11 +18,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 
-public class DataHandler {
+public class DataHandler extends Observable {
 
-    HashMap hashMap = new HashMap();
+    HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
 
     /** All the indicators that will be requested */
     String[] indicators = new String[]{"/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000", "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
@@ -30,21 +31,14 @@ public class DataHandler {
     Category[] categories = new Category[]{Category.ForestArea,Category.C02Emissions,Category.FossilFuel};
 
 
-    ProgressDialog progressDialog;
-
     /** Total number of AsyncTasks running in parallel */
     int AsyncCounter = 0;
 
     /**
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
-     * @param context the main activity, used to display progressDialog
      */
-    public DataHandler(Context context){
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("Loading data...");
-        progressDialog.show();
-
+    public DataHandler(){
 
             for(int i = 0; i<indicators.length;i++) {
                 new RetrieveData(categories[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
@@ -52,37 +46,15 @@ public class DataHandler {
     }
 
 
+    public HashMap getHashMap (){
+        return hashMap;
+    }
 
+    protected void dataLoaded(){
 
+        setChanged();
+        notifyObservers();
 
-
-
-
-
-    protected void completedLoad() {
-
-        Set set = hashMap.entrySet();
-        Iterator iterator = set.iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-
-            DataSet dataSet = (DataSet) entry.getValue();
-            Log.e("DATA", entry.getKey() + " " + dataSet.getEntrySize());
-
-
-        }
-
-        //example
-
-        if (hashMap.containsKey("Fossil2013")){
-            DataSet dataSet = (DataSet) hashMap.get("Forest2012");
-
-        for (Entry entry : dataSet.getEntries()) {
-            Log.e("COUNTRY ", entry.getCountry().getCountryName());
-        }
-
-        }
     }
 
 
@@ -134,11 +106,13 @@ public class DataHandler {
 
                             String key = dataIndicator+year;
                             if (!hashMap.containsKey(key)) {
-                                hashMap.put(key, new DataSet());
+                                hashMap.put(key, new ArrayList<Entry>());
 
                             }
 
-                            DataSet set = (DataSet) hashMap.get(key);
+                            ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
+                            entries.add(new Entry((Integer.parseInt(year)),new Country(country),Double.parseDouble(value)));
+
 //                            set.addEntry(new Entry(new Country(country)));
                         }
 
@@ -157,7 +131,7 @@ public class DataHandler {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if(AsyncCounter == indicators.length) {
-                testHashMap();
+                dataLoaded();
             }
         }
     }

@@ -17,7 +17,7 @@ public class Entry {
     private double percentage;
     private double diffPercentage;
 
-    public Entry(int year, Country country, double percentage, double diffPercentage) {
+    public Entry(int year, Country country, double percentage) {
         this.year = year;
         this.country = country;
         this.percentage = percentage;
