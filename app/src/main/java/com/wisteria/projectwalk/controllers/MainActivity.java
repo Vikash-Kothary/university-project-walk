@@ -35,8 +35,6 @@ public class MainActivity extends Activity implements ManagerCallback {
 
         manager.setManagerCallback(this);
 
-        // Test
-        dataIsReady(Category.C02Emissions, 2015);
     }
 
     @Override
@@ -52,6 +50,8 @@ public class MainActivity extends Activity implements ManagerCallback {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
                     yearSlider = new YearSlider(context, 2000, 2015);
                     yearSliderContainer.addView(yearSlider);
+                } else {
+                    // Refresh data
                 }
 
             }
