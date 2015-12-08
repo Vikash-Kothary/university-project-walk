@@ -1,7 +1,6 @@
 package com.wisteria.projectwalk.views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
@@ -9,6 +8,9 @@ import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.wisteria.projectwalk.models.Entry;
+import com.wisteria.projectwalk.models.LeaderboardDataSource;
+import com.wisteria.projectwalk.models.Manager;
 
 import java.util.ArrayList;
 
@@ -16,6 +18,9 @@ import java.util.ArrayList;
  * Created by Shubham on 08/12/2015.
  */
 public class LeaderboardChart extends HorizontalBarChart {
+    private LeaderboardDataSource dataSource = Manager.getInstance();
+
+
     public LeaderboardChart(Context context) {
         super(context);
 
@@ -24,11 +29,15 @@ public class LeaderboardChart extends HorizontalBarChart {
                 RadioGroup.LayoutParams.FILL_PARENT
         ));
 
-        setBackgroundColor(Color.RED);
-
         setTouchEnabled(true);
         setDragEnabled(true);
         setPinchZoom(true);
+
+    }
+
+    public void refresh() {
+        ArrayList<Entry> dataEntries = dataSource.getEntries();
+
 
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(4f, 0));
@@ -50,11 +59,6 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         BarData data = new BarData(labels, dataset);
         setData(data);
-
-
-    }
-
-    public void refresh() {
 
     }
 
