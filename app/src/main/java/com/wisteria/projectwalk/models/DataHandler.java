@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
@@ -24,6 +25,9 @@ import java.util.Set;
 public class DataHandler extends Observable {
 
     HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
+
+
+
 
     /** All the indicators that will be requested */
     String[] indicators = new String[]{"/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000", "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
@@ -64,6 +68,7 @@ public class DataHandler extends Observable {
     private class RetrieveData  extends AsyncTask<Object,Void,Void> {
 
         String dataIndicator;
+        String[] allISOs = Locale.getISOCountries();
         public RetrieveData(Category category){
 
             dataIndicator = category.type;
@@ -94,27 +99,33 @@ public class DataHandler extends Observable {
                     JSONArray jsonArray = new JSONArray(line);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
 
+
                     for (int x = 0; x < insideJSON.length(); x++) {
 
                         JSONObject object = insideJSON.getJSONObject(x);
                         String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
-
+                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
                         String year = object.getString("date");
-
                         String value = object.getString("value");
-                        if(!value.equals("null")) {
+                        if (!value.equals("null")) {
+                            for (String iso : allISOs) {
 
-                            String key = dataIndicator+year;
-                            if (!hashMap.containsKey(key)) {
-                                hashMap.put(key, new ArrayList<Entry>());
+                                if (iso.equals(countryISO)) {
+                                    String key = dataIndicator + year;
+                                    if (!hashMap.containsKey(key)) {
 
-                            }
+                                        hashMap.put(key, new ArrayList<Entry>());
 
-                            ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
-                            entries.add(new Entry((Integer.parseInt(year)),new Country(country),Double.parseDouble(value)));
+                                    }
+
+                                    ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
+                                    entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
 
 //                            set.addEntry(new Entry(new Country(country)));
-                        }
+                                    break;
+                                }
+                            }
+                    }
 
                     }
                 }

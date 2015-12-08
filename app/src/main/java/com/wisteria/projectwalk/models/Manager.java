@@ -123,6 +123,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         }
 
+
     }
 
     Comparator<Entry> compareEntries = new Comparator<Entry>(){
