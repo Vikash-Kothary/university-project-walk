@@ -15,7 +15,7 @@ import java.util.Observer;
  * The manager
  */
 
-public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate {
+public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate, YearSliderDataSource {
     private static Manager sharedInstance = new Manager();
     private HashMap<String, ArrayList<Entry>> allEntries;
 
@@ -26,6 +26,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     private int currentYear = 2004;
+    private int minYear = 2000;
+    private int maxYear = 2015;
     private Country usersCountry;
     private Category category = Category.ForestArea;
 
@@ -142,8 +144,17 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     };
 
-    public int[] availableYears() {
-        return null;
+    public ArrayList<Integer> getAvailableYears() {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+
+        for (int i = minYear; i <= maxYear; i++) {
+            if (allEntries.get(category.type + i) != null)
+                arrayList.add(i);
+        }
+
+        System.out.println("Available years: "+arrayList.toString());
+
+        return arrayList;
     }
 
 

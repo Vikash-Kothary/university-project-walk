@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements ManagerCallback {
                     leaderboardContainerLayout.addView(leaderboardLayout);
 
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
-                    yearSlider = new YearSlider(context, 2000, 2015);
+                    yearSlider = new YearSlider(context);
                     yearSliderContainer.addView(yearSlider);
                 } else {
                     // Refresh data
