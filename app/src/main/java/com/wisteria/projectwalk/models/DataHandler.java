@@ -30,9 +30,16 @@ public class DataHandler extends Observable {
 
 
     /** All the indicators that will be requested */
-    String[] indicators = new String[]{"/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000", "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/EG.USE.COMM.FO.ZS?date=2000:2015&format=JSON&per_page=4000"};
-    Category[] categories = new Category[]{Category.ForestArea,Category.C02Emissions,Category.FossilFuel};
+    String[] indicators = new String[]{
+            "/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000",
+            "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
+            "/indicators/EG.USE.COMM.FO.ZS?date=2000:2015&format=JSON&per_page=4000"
+    };
+    Category[] categories = new Category[]{
+            Category.ForestArea,
+            Category.C02Emissions,
+            Category.FossilFuel
+    };
 
 
     /** Total number of AsyncTasks running in parallel */
@@ -74,6 +81,7 @@ public class DataHandler extends Observable {
             dataIndicator = category.type;
 
         }
+
         @Override
         protected Void doInBackground(Object... params) {
 

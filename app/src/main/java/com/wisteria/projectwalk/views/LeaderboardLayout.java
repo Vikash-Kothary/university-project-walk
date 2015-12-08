@@ -23,7 +23,7 @@ public class LeaderboardLayout extends LinearLayout {
     private Context context;
     private LeaderboardRowLayout headerRowLayout;
     private ArrayList<LeaderboardRowLayout> rowLayouts = new ArrayList<>();
-    private LeaderboardDataSource dataSource = new DummyData();
+    private LeaderboardDataSource dataSource = Manager.getInstance();
 
     public LeaderboardLayout(Context context) {
         super(context);

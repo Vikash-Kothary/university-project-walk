@@ -25,9 +25,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return sharedInstance;
     }
 
-    private int currentYear;
+    private int currentYear = 2004;
     private Country usersCountry;
-    private Category category;
+    private Category category = Category.ForestArea;
 
     private Manager() {
 
@@ -57,9 +57,14 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      * @return the entry
      */
     public Entry entryForRanking(int ranking) {
+        Log.i("Manager", "Getting entries for "+category.type + currentYear);
+
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
 
-        return (Entry) entries.get(ranking - 1);
+//        if (entries != null) {
+            return entries.get(ranking - 1);
+//        }
+//        return null;
 
     }
 
@@ -71,6 +76,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public Entry entryForCountry(Country country) {
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
 
+        if (entries == null)
+            return null;
 
         for (Entry entry: entries) {
             if (entry.getCountry().equals(country))
@@ -106,9 +113,11 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void update(Observable observable, Object data) {
         handler = (DataHandler) observable;
 
-        allEntries = handler.getHashMap();
+        allEntries = (HashMap) handler.getHashMap().clone();
 
         Iterator iterator = allEntries.entrySet().iterator();
+
+        Log.i("Total number ", ""+allEntries.size());
 
         while(iterator.hasNext()) {
             Map.Entry pair = (Map.Entry) iterator.next();
@@ -117,12 +126,12 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             Collections.sort(entries, compareEntries);
             Collections.reverse(entries);
 
-            for (Entry entry : entries) {
-                Log.e(pair.getKey() + "", entry.getPercentage() + " <- val   " + entry.getCountry().getCountryName());
-            }
+
+                Log.i(pair.getKey() + "", "" + entries.size());
 
         }
 
+        managerCallback.dataIsReady(category, currentYear);
 
     }
 
@@ -133,6 +142,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     };
 
+    public int[] availableYears() {
+        return null;
+    }
 
 
 }
