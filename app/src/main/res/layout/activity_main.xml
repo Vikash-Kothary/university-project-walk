@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00FF7F"
             android:layout_marginTop="40dp">
@@ -67,17 +68,53 @@
                 android:onClick="onClick3"
                 />
 
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/spinner"
+                android:layout_weight="1"
+                android:entries="@array/country"
+                android:textColor="#FFFFFF"
+                android:background="#00000000"
+                />
+
+
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal"
+        android:text="Number of tress in each country"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Type something hello something hello somethinghelloType something hello something hello somethinghelloType something hello something hello somethinghelloType something hello something hello somethinghelloType something hello something hello somethinghello"
+        android:textColor="#000000"
+        android:id="@+id/textView3"
+        android:gravity="left"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="1dp"
+        android:lineSpacingExtra="5dp"
+         />
 
     <LinearLayout
         android:id="@+id/leaderboard_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"></LinearLayout>
+        android:layout_marginTop="30dp">
+
+    </LinearLayout>
 
 
 </LinearLayout>

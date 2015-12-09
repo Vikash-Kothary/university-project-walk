@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.wisteria.projectwalk.R;
@@ -33,10 +34,13 @@ public class MainActivity extends Activity {
         leaderboardLayout = new LeaderboardLayout(this);
         leaderboardContainerLayout.addView(leaderboardLayout);
 
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
         Button button = (Button)findViewById(R.id.button_cloud);
         Button button2 = (Button)findViewById(R.id.button_fuel);
         Button button3 = (Button)findViewById(R.id.button_tree);
+
         Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+
         //Set the typeface
         button.setTypeface(font);
         button2.setTypeface(font);
@@ -61,13 +65,13 @@ public class MainActivity extends Activity {
                //manager.setCategory(Category.);
             }
         };
-
-
         //button.setOnClickListener(listner);
+
+
     }
 
-    public void onClick(View view) {
-        Toast.makeText(this,"C02Emissions",Toast.LENGTH_SHORT).show();
+    public void onClick(View view){
+        Toast.makeText(this, "C02Emissions", Toast.LENGTH_SHORT).show();
     }
 
     public void onClick2(View view) {
@@ -78,5 +82,6 @@ public class MainActivity extends Activity {
         Toast.makeText(this,"FossilFuel",Toast.LENGTH_SHORT).show();
     }
 
+    }
 
-}
+
