@@ -1,48 +1,71 @@
 package com.wisteria.projectwalk.models;
 
 
+import android.widget.MultiAutoCompleteTextView;
+
+import java.util.ArrayList;
+
 /**
  * An Entry consists of a int year and a Number value
  * Used to represent a record of data at point of time for a country
  */
 public class Entry {
 
-    /** The year of this Entry*/
     private int year;
+    private int ranking;
+    private Country country;
+    private double percentage;
+    private double diffPercentage;
 
-    /**
-     * The value of this Entry.
-     * Using Generic Number because the value could be an int or a float.
-     */
-    private Number value;
-
-    /**
-     * @param year The year of this Entry.
-     * @param value The value, as String, to be converted.
-     */
-    public Entry(int year , String value){
+    public Entry(int year, Country country, double percentage) {
         this.year = year;
-
-        if(value.contains(".")){
-            this.value = Float.parseFloat(value);
-        }
-         else{
-            this.value = Long.parseLong(value);
-        }
+        this.country = country;
+        this.percentage = percentage;
+        this.diffPercentage = diffPercentage;
     }
 
-    /**
-     * @return The value as Number, use instanceof to find if its int or float.
-     */
-    public Number getValue(){
-        return value;
-    }
-
-    /**
-     * @return The year of this Entry.
-     */
-    public int getYear(){
+    public int getYear() {
         return year;
     }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public double getDiffPercentage() {
+        return diffPercentage;
+    }
+
+    public void setDiffPercentage(double diffPercentage) {
+        this.diffPercentage = diffPercentage;
+    }
+
+    public Country getCountry(){
+        return country;
+    }
+
+
+
+
 
 }
