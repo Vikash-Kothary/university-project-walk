@@ -134,9 +134,6 @@ public class DataHandler extends Observable {
 
                     }
 
-                Log.wtf("DataHandler",dataCollected);
-
-
                 JSONArray jsonArray = new JSONArray(dataCollected);
                 JSONArray insideJSON = jsonArray.getJSONArray(1);
 
