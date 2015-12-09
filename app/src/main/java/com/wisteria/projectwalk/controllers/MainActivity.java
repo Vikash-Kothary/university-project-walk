@@ -42,7 +42,8 @@ public class MainActivity extends Activity implements ManagerCallback {
         setContentView(R.layout.activity_main);
 
         manager.setManagerCallback(this);
-
+        manager.setContext(this);
+        manager.initManager();
         Button button = (Button)findViewById(R.id.button_cloud);
         Button button2 = (Button)findViewById(R.id.button_fuel);
         Button button3 = (Button)findViewById(R.id.button_tree);

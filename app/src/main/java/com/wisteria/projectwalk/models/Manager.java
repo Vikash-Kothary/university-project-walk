@@ -1,6 +1,9 @@
 package com.wisteria.projectwalk.models;
 
+import android.content.Context;
 import android.util.Log;
+
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +37,17 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     private Category category = Category.FossilFuel;
 
-    private Manager() {
 
-        dataHandler = new DataHandler();
+    Context activity;
+    public void setContext(Context context){
+
+        activity = context;
+    }
+
+    public void initManager(){
+        DataHandler dataHandler = new DataHandler(activity);
         dataHandler.addObserver(this);
         dataHandler.retrieveNewData(category, currentYear);
-
     }
 
     public int getCurrentYear() {
@@ -129,7 +137,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         Iterator iterator = allEntries.entrySet().iterator();
 
-        Log.i("Total number ", ""+allEntries.size());
+        Log.i("Total number ", "" + allEntries.size());
 
         while(iterator.hasNext()) {
             Map.Entry pair = (Map.Entry) iterator.next();
@@ -173,7 +181,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
                 arrayList.add(i);
         }
 
-        System.out.println("Available years: "+arrayList.toString());
+        System.out.println("Available years: "+ arrayList.toString());
 
         return arrayList;
     }
