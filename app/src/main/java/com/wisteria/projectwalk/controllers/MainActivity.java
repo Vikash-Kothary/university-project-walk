@@ -43,8 +43,11 @@ public class MainActivity extends Activity implements ManagerCallback {
         setContentView(R.layout.activity_main);
 
         manager.setManagerCallback(this);
-
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        manager.setContext(this);
+        manager.initManager();
+
         Button button = (Button)findViewById(R.id.button_cloud);
         Button button2 = (Button)findViewById(R.id.button_fuel);
         Button button3 = (Button)findViewById(R.id.button_tree);
@@ -79,10 +82,6 @@ public class MainActivity extends Activity implements ManagerCallback {
 
     }
 
-<<<<<<< HEAD
-    public void onClick(View view){
-        Toast.makeText(this, "C02Emissions", Toast.LENGTH_SHORT).show();
-=======
     @Override
     public void dataIsReady(Category category, int year) {
         this.runOnUiThread(new Runnable() {
@@ -108,7 +107,6 @@ public class MainActivity extends Activity implements ManagerCallback {
 
     public void onClick(View view) {
         Toast.makeText(this,"C02Emissions",Toast.LENGTH_SHORT).show();
->>>>>>> origin/test-gun
     }
 
     public void onClick2(View view) {

@@ -1,6 +1,9 @@
 package com.wisteria.projectwalk.models;
 
+import android.content.Context;
 import android.util.Log;
+
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,18 +27,22 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public static Manager getInstance() {
         return sharedInstance;
     }
-
     private int currentYear = 2004;
     private int minYear = 2000;
     private int maxYear = 2015;
     private Country usersCountry;
-    private Category category = Category.ForestArea;
+    private Category category = Category.FossilFuel;
 
-    private Manager() {
 
-        DataHandler dataHandler = new DataHandler();
+    Context activity;
+    public void setContext(Context context){
+
+        activity = context;
+    }
+
+    public void initManager(){
+        DataHandler dataHandler = new DataHandler(activity);
         dataHandler.addObserver(this);
-
     }
 
     public int getCurrentYear() {
@@ -119,7 +126,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         Iterator iterator = allEntries.entrySet().iterator();
 
-        Log.i("Total number ", ""+allEntries.size());
+        Log.i("Total number ", "" + allEntries.size());
 
         while(iterator.hasNext()) {
             Map.Entry pair = (Map.Entry) iterator.next();
@@ -128,8 +135,19 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             Collections.sort(entries, compareEntries);
             Collections.reverse(entries);
 
+            Log.i(pair.getKey() + "", "" + entries.size());
 
-                Log.i(pair.getKey() + "", "" + entries.size());
+            if(entries.get(0).getPercentage() > 100){
+
+                for(Entry entry : entries){
+
+                    entry.setTempPercentage();
+                    entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
+
+                }
+
+            }
+
 
         }
 
@@ -139,8 +157,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     Comparator<Entry> compareEntries = new Comparator<Entry>(){
 
-        public int compare(Entry task1, Entry task2) {
-            return Double.compare(task1.getPercentage(), task2.getPercentage());
+        public int compare(Entry entry1, Entry entry2) {
+            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
         }
     };
 
@@ -152,7 +170,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
                 arrayList.add(i);
         }
 
-        System.out.println("Available years: "+arrayList.toString());
+        System.out.println("Available years: "+ arrayList.toString());
 
         return arrayList;
     }

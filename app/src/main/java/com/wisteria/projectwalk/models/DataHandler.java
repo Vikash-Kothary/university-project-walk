@@ -10,6 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,9 +29,6 @@ import java.util.Set;
 public class DataHandler extends Observable {
 
     HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
-
-
-
 
     /** All the indicators that will be requested */
     String[] indicators = new String[]{
@@ -49,10 +50,10 @@ public class DataHandler extends Observable {
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
-    public DataHandler(){
+    public DataHandler(Context context){
 
             for(int i = 0; i<indicators.length;i++) {
-                new RetrieveData(categories[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
+                new RetrieveData(categories[i],context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
             }
     }
 
@@ -62,12 +63,9 @@ public class DataHandler extends Observable {
     }
 
     protected void dataLoaded(){
-
         setChanged();
         notifyObservers();
-
     }
-
 
     /**
      * Requests data using the provided indicators
@@ -76,8 +74,10 @@ public class DataHandler extends Observable {
 
         String dataIndicator;
         String[] allISOs = Locale.getISOCountries();
-        public RetrieveData(Category category){
+        Context context;
+        public RetrieveData(Category category, Context context){
 
+            this.context = context;
             dataIndicator = category.type;
 
         }
@@ -85,61 +85,83 @@ public class DataHandler extends Observable {
         @Override
         protected Void doInBackground(Object... params) {
 
-            BufferedReader br;
-            URL url;
-            String line;
-            String newURL = "http://api.worldbank.org/countries" + params[0];
+            String dataCollected = "";
 
-            try {
+                BufferedReader input = null;
+                File file = null;
+                try {
 
-                url = new URL(newURL);
-                URLConnection connection = url.openConnection();
+                    file = new File(context.getCacheDir(), dataIndicator);
 
-                br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    if(file.exists()) {
 
-                while ((line = br.readLine()) != null) {
+                        input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+                        String line;
+                        StringBuilder cacheBuilder = new StringBuilder();
+                        while ((line = input.readLine()) != null) {
+                            cacheBuilder.append(line);
+                        }
 
-                    if (line.contains("message") || line.contains("pages\":0")) {
-                        br.close();
-                        break;
+                        dataCollected = cacheBuilder.toString();
                     }
 
-                    JSONArray jsonArray = new JSONArray(line);
-                    JSONArray insideJSON = jsonArray.getJSONArray(1);
+                    else{
+
+                        BufferedReader br;
+                        URL url;
+                        String line;
+                        String newURL = "http://api.worldbank.org/countries" + params[0];
 
 
-                    for (int x = 0; x < insideJSON.length(); x++) {
+                            url = new URL(newURL);
+                            URLConnection connection = url.openConnection();
 
-                        JSONObject object = insideJSON.getJSONObject(x);
-                        String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
-                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
-                        String year = object.getString("date");
-                        String value = object.getString("value");
-                        if (!value.equals("null")) {
-                            for (String iso : allISOs) {
+                            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                                if (iso.equals(countryISO)) {
-                                    String key = dataIndicator + year;
-                                    if (!hashMap.containsKey(key)) {
-
-                                        hashMap.put(key, new ArrayList<Entry>());
-
-                                    }
-
-                                    ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
-                                    entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
-
-//                            set.addEntry(new Entry(new Country(country)));
-                                    break;
-                                }
+                            StringBuilder internetBuilder = new StringBuilder();
+                            while ((line = br.readLine()) != null) {
+                                internetBuilder.append(line);
+                                File infile;
+                                FileOutputStream outputStream;
+                                infile = new File(context.getCacheDir(), dataIndicator);
+                                outputStream = new FileOutputStream(infile);
+                                outputStream.write(line.getBytes());
+                                outputStream.close();
                             }
+
+                            dataCollected = internetBuilder.toString();
                     }
 
+
+                JSONArray jsonArray = new JSONArray(dataCollected);
+                JSONArray insideJSON = jsonArray.getJSONArray(1);
+
+                for (int x = 0; x < insideJSON.length(); x++) {
+
+                    JSONObject object = insideJSON.getJSONObject(x);
+                    String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                    String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
+                    String year = object.getString("date");
+                    String value = object.getString("value");
+                    if (!value.equals("null")) {
+                        for (String iso : allISOs) {
+
+                            if (iso.equals(countryISO)) {
+                                String key = dataIndicator + year;
+                                if (!hashMap.containsKey(key)) {
+                                    hashMap.put(key, new ArrayList<Entry>());
+                                }
+                                ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
+                                entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
+                                break;
+                            }
+                        }
                     }
                 }
+            }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            catch (Exception e){
+
             }
 
             AsyncCounter++;

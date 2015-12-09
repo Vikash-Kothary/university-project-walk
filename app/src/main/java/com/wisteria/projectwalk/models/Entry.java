@@ -17,6 +17,19 @@ public class Entry {
     private double percentage;
     private double diffPercentage;
 
+    public double getTempPercentage() {
+        return tempPercentage;
+    }
+
+
+    private double tempPercentage;
+
+
+    public void setTempPercentage(){
+        tempPercentage = percentage;
+    }
+
+
     public Entry(int year, Country country, double percentage) {
         this.year = year;
         this.country = country;
