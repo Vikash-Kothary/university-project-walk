@@ -2,7 +2,7 @@ package com.wisteria.projectwalk.models;
 
 import android.content.Context;
 import android.util.Log;
-
+import android.util.Range;
 
 
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     private int currentYear = 2004;
-    private int minYear = 1980;
-    private int maxYear = 2015;
+
+    private Range<Integer> yearRange = new Range<>(1980, 2015);
     private Country usersCountry;
 
     private DataHandler dataHandler;
@@ -45,7 +45,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     public void initManager(){
-        DataHandler dataHandler = new DataHandler(activity, minYear, maxYear);
+        DataHandler dataHandler = new DataHandler(activity, yearRange);
         dataHandler.addObserver(this);
         dataHandler.retrieveNewData(category, currentYear);
     }
@@ -71,7 +71,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      * @return the entry
      */
     public Entry entryForRanking(int ranking) {
-        Log.i("Manager", "Getting entries for "+category.type + currentYear);
+        Log.i("Manager", "Getting entries for " + category.type + currentYear);
 
         ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
 
@@ -176,7 +176,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public ArrayList<Integer> getAvailableYears() {
         ArrayList<Integer> arrayList = new ArrayList<>();
 
-        for (int i = minYear; i <= maxYear; i++) {
+        for (int i = yearRange.getLower(); i <= yearRange.getUpper(); i++) {
             if (allEntries.get(category.type + i) != null)
                 arrayList.add(i);
         }
