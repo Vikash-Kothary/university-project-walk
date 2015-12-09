@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.wisteria.projectwalk.R;
@@ -42,12 +43,17 @@ public class MainActivity extends Activity implements ManagerCallback {
         setContentView(R.layout.activity_main);
 
         manager.setManagerCallback(this);
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
         manager.setContext(this);
         manager.initManager();
+
         Button button = (Button)findViewById(R.id.button_cloud);
         Button button2 = (Button)findViewById(R.id.button_fuel);
         Button button3 = (Button)findViewById(R.id.button_tree);
+
         Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+
         //Set the typeface
         button.setTypeface(font);
         button2.setTypeface(font);
@@ -71,9 +77,9 @@ public class MainActivity extends Activity implements ManagerCallback {
                 //manager.setCategory(Category.);
             }
         };
-
-
         //button.setOnClickListener(listner);
+
+
     }
 
     @Override
@@ -111,5 +117,6 @@ public class MainActivity extends Activity implements ManagerCallback {
         Toast.makeText(this,"FossilFuel",Toast.LENGTH_SHORT).show();
     }
 
+    }
 
-}
+
