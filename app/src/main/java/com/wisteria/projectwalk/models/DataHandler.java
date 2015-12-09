@@ -78,11 +78,13 @@ public class DataHandler extends Observable {
         Category category;
         Context context;
         String[] allISOs = Locale.getISOCountries();
+        int year;
 
         public RetrieveData(Category category, int year, Context context){
             this.context = context;
             this.dataIndicator = getIndicator(category, year);
             this.category = category;
+            this.year = year;
         }
 
         @Override
@@ -108,11 +110,10 @@ public class DataHandler extends Observable {
                         dataCollected = cacheBuilder.toString();
                     } else {
 
-                        BufferedReader br;
-                        URL url;
-                        String line;
-                        String newURL = "http://api.worldbank.org/countries" + dataIndicator;
-                        Log.i("DataHandler", "newURL: "+newURL);
+                            BufferedReader br;
+                            URL url;
+                            String line;
+                            String newURL = "http://api.worldbank.org/countries" + dataIndicator;
 
                             url = new URL(newURL);
                             URLConnection connection = url.openConnection();
@@ -122,18 +123,20 @@ public class DataHandler extends Observable {
                             StringBuilder internetBuilder = new StringBuilder();
                             while ((line = br.readLine()) != null) {
                                 internetBuilder.append(line);
+                                dataCollected = internetBuilder.toString();
                                 File infile;
                                 FileOutputStream outputStream;
-                                infile = new File(context.getCacheDir(), dataIndicator);
+                                infile = new File(context.getCacheDir(), category.type+year);
                                 outputStream = new FileOutputStream(infile);
                                 outputStream.write(line.getBytes());
                                 outputStream.close();
                             }
 
-                            dataCollected = internetBuilder.toString();
                     }
 
-                Log.i("DataHandler",dataCollected);
+                Log.wtf("DataHandler",dataCollected);
+
+
                 JSONArray jsonArray = new JSONArray(dataCollected);
                 JSONArray insideJSON = jsonArray.getJSONArray(1);
 
