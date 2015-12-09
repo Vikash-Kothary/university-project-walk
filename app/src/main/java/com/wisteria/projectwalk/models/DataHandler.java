@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.util.Range;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,17 +30,18 @@ public class DataHandler extends Observable {
 
     HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
     private Context context;
-    private Range<Integer> yearRange;
+    private int minYear;
+    private int maxYear;
 
 
-    public String getIndicator(Category category, Range<Integer> yearRange) {
+    public String getIndicator(Category category, int year) {
         String[] categoryCodes = new String[]{
                 "AG.LND.FRST.K2",
                 "EN.ATM.CO2E.KT",
                 "EG.USE.COMM.FO.ZS"
         };
 
-        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+yearRange.getLower()+":"+yearRange.getUpper()+"&format=JSON&per_page=10000";
+        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
 
     }
 
@@ -53,21 +53,17 @@ public class DataHandler extends Observable {
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
-    public DataHandler(Context context, Range<Integer> yearRange){
+    public DataHandler(Context context, int minYear, int maxYear){
         this.context = context;
 
-        this.yearRange = yearRange;
+        this.minYear = minYear;
+        this.maxYear = maxYear;
     }
 
     public void retrieveNewData(Category category, int year) {
 
-        new RetrieveData(category, new Range<>(year, year), context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new RetrieveData(category, year, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-    }
-
-    public void retrieveNewData(Category category, Range<Integer> yearRange) {
-
-        new RetrieveData(category, yearRange, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public HashMap getHashMap (){
@@ -88,14 +84,13 @@ public class DataHandler extends Observable {
         Category category;
         Context context;
         String[] allISOs = Locale.getISOCountries();
-        Range<Integer> yearRange;
+        int year;
 
-        public RetrieveData(Category category, Range<Integer> yearRange, Context context){
+        public RetrieveData(Category category, int year, Context context){
             this.context = context;
-            this.dataIndicator = getIndicator(category, yearRange);
+            this.dataIndicator = getIndicator(category, year);
             this.category = category;
-
-            this.yearRange = yearRange;
+            this.year = year;
         }
 
         @Override
@@ -137,8 +132,6 @@ public class DataHandler extends Observable {
                                 dataCollected = internetBuilder.toString();
                                 File infile;
                                 FileOutputStream outputStream;
-
-                                int year = 2005; // TODO Loop through all the years in case user wants data for more than one year
                                 infile = new File(context.getCacheDir(), category.type+year);
                                 outputStream = new FileOutputStream(infile);
                                 outputStream.write(line.getBytes());
