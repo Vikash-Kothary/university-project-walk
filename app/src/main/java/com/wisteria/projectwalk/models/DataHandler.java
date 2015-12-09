@@ -26,20 +26,16 @@ public class DataHandler extends Observable {
 
     HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
 
+    public String getIndicator(Category category, int year) {
+        String[] categoryCodes = new String[]{
+                "AG.LND.FRST.K2",
+                "EN.ATM.CO2E.KT",
+                "EG.USE.COMM.FO.ZS"
+        };
 
+        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+year+"&format=JSON&per_page=2000";
 
-
-    /** All the indicators that will be requested */
-    String[] indicators = new String[]{
-            "/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/EG.USE.COMM.FO.ZS?date=2000:2015&format=JSON&per_page=4000"
-    };
-    Category[] categories = new Category[]{
-            Category.ForestArea,
-            Category.C02Emissions,
-            Category.FossilFuel
-    };
+    }
 
 
     /** Total number of AsyncTasks running in parallel */
@@ -50,12 +46,13 @@ public class DataHandler extends Observable {
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
     public DataHandler(){
-
-            for(int i = 0; i<indicators.length;i++) {
-                new RetrieveData(categories[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
-            }
     }
 
+    public void retrieveNewData(Category category, int year) {
+
+        new RetrieveData(category, year).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
 
     public HashMap getHashMap (){
         return hashMap;
@@ -72,14 +69,16 @@ public class DataHandler extends Observable {
     /**
      * Requests data using the provided indicators
      */
-    private class RetrieveData  extends AsyncTask<Object,Void,Void> {
+    private class RetrieveData extends AsyncTask<Object,Void,Void> {
 
         String dataIndicator;
+        Category category;
+
         String[] allISOs = Locale.getISOCountries();
-        public RetrieveData(Category category){
+        public RetrieveData(Category category, int year){
 
-            dataIndicator = category.type;
-
+            dataIndicator = getIndicator(category, year);
+            this.category = category;
         }
 
         @Override
@@ -88,7 +87,7 @@ public class DataHandler extends Observable {
             BufferedReader br;
             URL url;
             String line;
-            String newURL = "http://api.worldbank.org/countries" + params[0];
+            String newURL = "http://api.worldbank.org/countries" + dataIndicator;
 
             try {
 
@@ -99,14 +98,8 @@ public class DataHandler extends Observable {
 
                 while ((line = br.readLine()) != null) {
 
-                    if (line.contains("message") || line.contains("pages\":0")) {
-                        br.close();
-                        break;
-                    }
-
                     JSONArray jsonArray = new JSONArray(line);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
-
 
                     for (int x = 0; x < insideJSON.length(); x++) {
 
@@ -119,7 +112,7 @@ public class DataHandler extends Observable {
                             for (String iso : allISOs) {
 
                                 if (iso.equals(countryISO)) {
-                                    String key = dataIndicator + year;
+                                    String key = category.type + year;
                                     if (!hashMap.containsKey(key)) {
 
                                         hashMap.put(key, new ArrayList<Entry>());
@@ -148,9 +141,7 @@ public class DataHandler extends Observable {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(AsyncCounter == indicators.length) {
-                dataLoaded();
-            }
+            dataLoaded();
         }
     }
 

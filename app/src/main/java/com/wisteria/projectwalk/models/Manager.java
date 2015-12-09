@@ -29,12 +29,16 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private int minYear = 2000;
     private int maxYear = 2015;
     private Country usersCountry;
+
+    private DataHandler dataHandler;
+
     private Category category = Category.FossilFuel;
 
     private Manager() {
 
-        DataHandler dataHandler = new DataHandler();
+        dataHandler = new DataHandler();
         dataHandler.addObserver(this);
+        dataHandler.retrieveNewData(category, currentYear);
 
     }
 
@@ -96,13 +100,19 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      */
     public void populateEntries(Category category, int currentYear) {
         // check if entries are  present in hashmap for this category and year
+        if (allEntries.containsKey(category.type + currentYear)) {
+            return;
+        }
+
+        dataHandler.retrieveNewData(category, currentYear);
         // if not get the data from the api
         // add it to the hashmap
         ArrayList<Entry> entries;
        // allEntries.put(category.type+currentYear, entries);
         // sort it with comparator
 
-        managerCallback.dataIsReady(category, currentYear);
+
+
     }
 
 
@@ -169,4 +179,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
 
+
+    public Category getCategory() {
+        return category;
+    }
 }
