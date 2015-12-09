@@ -9,6 +9,7 @@ import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Entry;
 import com.wisteria.projectwalk.models.LeaderboardDataSource;
 import com.wisteria.projectwalk.models.Manager;
@@ -33,6 +34,19 @@ public class LeaderboardChart extends HorizontalBarChart {
         setTouchEnabled(true);
         setDragEnabled(true);
         setPinchZoom(true);
+        setVisibleXRangeMinimum(2);
+
+
+
+
+        zoom(30,30,1,1);
+        setDrawGridBackground(false);
+
+        getXAxis().setDrawGridLines(false);
+        getAxisLeft().setDrawGridLines(false);
+
+        getAxisLeft().setEnabled(false);
+        getAxisRight().setEnabled(false);
 
     }
 
@@ -53,16 +67,20 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         BarDataSet dataset = new BarDataSet(entries, "Ranking");
 
+        dataset.setBarSpacePercent(0f);
 
 
 
         BarData data = new BarData(labels, dataset);
         setData(data);
 
+
     }
 
 
     public void changeColor(Color color) {
+
+
 
     }
 }
