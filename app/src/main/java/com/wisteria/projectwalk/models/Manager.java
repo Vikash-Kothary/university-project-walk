@@ -29,7 +29,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     private int currentYear = 2004;
-    private int minYear = 2000;
+    private int minYear = 1980;
     private int maxYear = 2015;
     private Country usersCountry;
 
@@ -45,7 +45,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     public void initManager(){
-        DataHandler dataHandler = new DataHandler(activity);
+        DataHandler dataHandler = new DataHandler(activity, minYear, maxYear);
         dataHandler.addObserver(this);
         dataHandler.retrieveNewData(category, currentYear);
     }

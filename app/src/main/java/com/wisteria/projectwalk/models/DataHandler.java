@@ -30,6 +30,9 @@ public class DataHandler extends Observable {
 
     HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
     private Context context;
+    private int minYear;
+    private int maxYear;
+
 
     public String getIndicator(Category category, int year) {
         String[] categoryCodes = new String[]{
@@ -38,7 +41,7 @@ public class DataHandler extends Observable {
                 "EG.USE.COMM.FO.ZS"
         };
 
-        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+year+"&format=JSON&per_page=2000";
+        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
 
     }
 
@@ -50,8 +53,11 @@ public class DataHandler extends Observable {
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
-    public DataHandler(Context context){
+    public DataHandler(Context context, int minYear, int maxYear){
         this.context = context;
+
+        this.minYear = minYear;
+        this.maxYear = maxYear;
     }
 
     public void retrieveNewData(Category category, int year) {
