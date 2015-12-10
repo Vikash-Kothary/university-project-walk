@@ -51,15 +51,14 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void initManager(){
         dataHandler = new DataHandler(activity);
         dataHandler.addObserver(this);
-        dataHandler.retrieveNewData(category, currentYear, currentYear, AsyncTask.THREAD_POOL_EXECUTOR);
+        dataHandler.retrieveNewData(category, currentYear, currentYear, AsyncTask.SERIAL_EXECUTOR);
 
-//        dataHandler.retrieveNewData(category, minYear, maxYear, AsyncTask.THREAD_POOL_EXECUTOR);
-//
-//        Category[] categories = {Category.C02Emissions, Category.ForestArea, Category.FossilFuel};
-//        for (int i = 0; i < 3; i++) {
-//            if (categories[i] != category)
-//                dataHandler.retrieveNewData(category, minYear, maxYear, AsyncTask.THREAD_POOL_EXECUTOR);
-//        }
+        dataHandler.retrieveNewData(category, minYear, maxYear, AsyncTask.SERIAL_EXECUTOR);
+        Category[] categories = {Category.C02Emissions, Category.ForestArea, Category.FossilFuel};
+        for (int i = 0; i < 3; i++) {
+            if (categories[i] != category)
+                dataHandler.retrieveNewData(category, minYear, maxYear, AsyncTask.SERIAL_EXECUTOR);
+        }
     }
 
     public int getCurrentYear() {
