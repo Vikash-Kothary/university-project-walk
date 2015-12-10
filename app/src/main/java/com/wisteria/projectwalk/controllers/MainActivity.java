@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -84,6 +85,8 @@ public class MainActivity extends Activity implements ManagerCallback {
 
     @Override
     public void dataIsReady(Category category, int year) {
+        Log.i("MainActivity", "data is ready for category "+category+", year "+year);
+
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {

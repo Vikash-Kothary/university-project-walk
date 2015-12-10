@@ -2,6 +2,8 @@ package com.wisteria.projectwalk.models;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -15,15 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Observable;
+import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
     HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
-    private int minYear;
-    private int maxYear;
 
-    public String getIndicator(Category category, int year) {
+
+    public String getIndicator(Category category, int minYear, int maxYear) {
         String[] categoryCodes = new String[]{
                 "AG.LND.FRST.K2",
                 "EN.ATM.CO2E.KT",
@@ -41,15 +43,25 @@ public class DataHandler extends Observable {
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
-    public DataHandler(Context context, int minYear, int maxYear){
+    public DataHandler(Context context){
         this.context = context;
-        this.minYear = minYear;
-        this.maxYear = maxYear;
     }
 
     public void retrieveNewData(Category category, int year) {
 
-        new RetrieveData(category, year, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        retrieveNewData(category, year, year, AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    public void retrieveNewData(Category category, int minYear, int maxYear, Executor executor) {
+
+        new RetrieveData(category, minYear, maxYear, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    public void retrieveNewData(Category category, int minYear, int maxYear) {
+
+        retrieveNewData(category, minYear, maxYear, AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -67,17 +79,20 @@ public class DataHandler extends Observable {
      */
     private class RetrieveData extends AsyncTask<Object,Void,Void> {
 
-        String dataIndicator;
-        Category category;
-        Context context;
-        String[] allISOs = Locale.getISOCountries();
-        int year;
+        private String dataIndicator;
+        private Category category;
+        private Context context;
+        private String[] allISOs = Locale.getISOCountries();
+        private int minYear;
+        private int maxYear;
 
-        public RetrieveData(Category category, int year, Context context){
+        public RetrieveData(Category category, int minYear, int maxYear, Context context){
+            Log.i("RetrieveData", "Retrieving data for "+category+", "+minYear+", "+maxYear);
             this.context = context;
-            this.dataIndicator = getIndicator(category, year);
+            this.dataIndicator = getIndicator(category, minYear, maxYear);
             this.category = category;
-            this.year = year;
+            this.minYear = minYear;
+            this.maxYear = maxYear;
         }
 
         @Override
@@ -121,6 +136,7 @@ public class DataHandler extends Observable {
                                 dataCollected = internetBuilder.toString();
                                 File infile;
                                 FileOutputStream outputStream;
+                                int year = 2004;
                                 infile = new File(context.getCacheDir(), category.type+year);
                                 outputStream = new FileOutputStream(infile);
                                 outputStream.write(line.getBytes());

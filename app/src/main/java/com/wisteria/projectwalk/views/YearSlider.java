@@ -25,8 +25,6 @@ public class YearSlider extends SeekBar {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             delegate.setCurrentYear(availableYears.get(progress));
-
-            System.out.println("Year: " + availableYears.get(progress));
         }
 
         @Override
