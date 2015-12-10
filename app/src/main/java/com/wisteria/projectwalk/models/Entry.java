@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class Entry {
 
     private int year;
-    private int ranking;
     private Country country;
     private double percentage;
     private double diffPercentage;
@@ -21,9 +20,7 @@ public class Entry {
         return tempPercentage;
     }
 
-
     private double tempPercentage;
-
 
     public void setTempPercentage(){
         tempPercentage = percentage;
@@ -37,21 +34,6 @@ public class Entry {
         this.diffPercentage = diffPercentage;
     }
 
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(int ranking) {
-        this.ranking = ranking;
-    }
 
     public void setCountry(Country country) {
         this.country = country;
