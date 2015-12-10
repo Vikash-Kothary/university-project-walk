@@ -45,6 +45,7 @@ public class CountryBar extends HorizontalBarChart {
         getAxisLeft().setEnabled(false);
         getAxisRight().setEnabled(false);
 
+        getXAxis().setTextSize(30f);
 
 
 

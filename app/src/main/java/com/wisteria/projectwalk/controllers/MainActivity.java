@@ -66,6 +66,7 @@ public class MainActivity extends Activity implements ManagerCallback {
 
                     if (cname != null){
                         countryBar.refresh(cname);
+                        countryBar.invalidate();
                     }
 
                 }catch (NullPointerException e){

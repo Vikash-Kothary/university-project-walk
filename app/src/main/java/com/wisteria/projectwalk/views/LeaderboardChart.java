@@ -42,7 +42,7 @@ public class LeaderboardChart extends HorizontalBarChart {
 
 
 
-        zoom(30,30,1,1);
+        zoom(30, 30, 1, 1);
         setDrawGridBackground(false);
 
         getXAxis().setDrawGridLines(false);
@@ -50,7 +50,7 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         getAxisLeft().setEnabled(false);
         getAxisRight().setEnabled(false);
-
+        getXAxis().setTextSize(12f);
 
 
     }
@@ -79,7 +79,7 @@ public class LeaderboardChart extends HorizontalBarChart {
         setData(data);
 
 
-
+        invalidate();
     }
 
 
