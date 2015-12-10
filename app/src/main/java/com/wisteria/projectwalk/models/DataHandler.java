@@ -1,47 +1,40 @@
 package com.wisteria.projectwalk.models;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Observable;
-import java.util.Set;
+import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-    HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
+    HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+    private Context context;
 
-    /** All the indicators that will be requested */
-    String[] indicators = new String[]{
-            "/indicators/AG.LND.FRST.K2?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/EN.ATM.CO2E.KT?date=2000:2015&format=JSON&per_page=4000",
-            "/indicators/EG.USE.COMM.FO.ZS?date=2000:2015&format=JSON&per_page=4000"
-    };
-    Category[] categories = new Category[]{
-            Category.ForestArea,
-            Category.C02Emissions,
-            Category.FossilFuel
-    };
 
+    public String getIndicator(Category category, int minYear, int maxYear) {
+        String[] categoryCodes = new String[]{
+                "AG.LND.FRST.K2",
+                "EN.ATM.CO2E.KT",
+                "EG.USE.COMM.FO.ZS"
+        };
+
+        return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
+
+    }
 
     /** Total number of AsyncTasks running in parallel */
     int AsyncCounter = 0;
@@ -51,12 +44,26 @@ public class DataHandler extends Observable {
      *  Executes the AsyncTask using a Thread Pool (parallel)
      */
     public DataHandler(Context context){
-
-            for(int i = 0; i<indicators.length;i++) {
-                new RetrieveData(categories[i],context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, indicators[i]);
-            }
+        this.context = context;
     }
 
+    public void retrieveNewData(Category category, int year) {
+
+        retrieveNewData(category, year, year, AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    public void retrieveNewData(Category category, int minYear, int maxYear, Executor executor) {
+
+        new RetrieveData(category, minYear, maxYear, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    public void retrieveNewData(Category category, int minYear, int maxYear) {
+
+        retrieveNewData(category, minYear, maxYear, AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
 
     public HashMap getHashMap (){
         return hashMap;
@@ -70,30 +77,40 @@ public class DataHandler extends Observable {
     /**
      * Requests data using the provided indicators
      */
-    private class RetrieveData  extends AsyncTask<Object,Void,Void> {
+    private class RetrieveData extends AsyncTask<Object,Void,Void> {
 
-        String dataIndicator;
-        String[] allISOs = Locale.getISOCountries();
-        Context context;
-        public RetrieveData(Category category, Context context){
+        private String dataIndicator;
+        private Category category;
+        private Context context;
+        private String[] allISOs = Locale.getISOCountries();
+        private int minYear;
+        private int maxYear;
 
+        public RetrieveData(Category category, int minYear, int maxYear, Context context){
+            Log.i("RetrieveData", "Retrieving data for "+category+", "+minYear+", "+maxYear);
             this.context = context;
-            dataIndicator = category.type;
-
+            this.dataIndicator = getIndicator(category, minYear, maxYear);
+            this.category = category;
+            this.minYear = minYear;
+            this.maxYear = maxYear;
         }
 
         @Override
         protected Void doInBackground(Object... params) {
 
-            String dataCollected = "";
 
-                BufferedReader input = null;
-                File file = null;
+            for(int y = minYear; y <maxYear+1; y++) {
+
+                String dataCollected = "";
+
+                BufferedReader input;
+                File file;
+
                 try {
 
-                    file = new File(context.getCacheDir(), dataIndicator);
+                    file = new File(context.getCacheDir(), category.type + y);
 
-                    if(file.exists()) {
+                    if (file.exists()) {
 
                         input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                         String line;
@@ -103,64 +120,65 @@ public class DataHandler extends Observable {
                         }
 
                         dataCollected = cacheBuilder.toString();
-                    }
 
-                    else{
+                    } else {
 
                         BufferedReader br;
                         URL url;
                         String line;
-                        String newURL = "http://api.worldbank.org/countries" + params[0];
+                        String newURL = "http://api.worldbank.org/countries" + dataIndicator;
 
+                        url = new URL(newURL);
+                        URLConnection connection = url.openConnection();
 
-                            url = new URL(newURL);
-                            URLConnection connection = url.openConnection();
+                        br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                            StringBuilder internetBuilder = new StringBuilder();
-                            while ((line = br.readLine()) != null) {
-                                internetBuilder.append(line);
-                                File infile;
-                                FileOutputStream outputStream;
-                                infile = new File(context.getCacheDir(), dataIndicator);
-                                outputStream = new FileOutputStream(infile);
-                                outputStream.write(line.getBytes());
-                                outputStream.close();
-                            }
-
+                        StringBuilder internetBuilder = new StringBuilder();
+                        while ((line = br.readLine()) != null) {
+                            internetBuilder.append(line);
                             dataCollected = internetBuilder.toString();
+                            File infile;
+                            FileOutputStream outputStream;
+                            infile = new File(context.getCacheDir(), category.type + y);
+                            outputStream = new FileOutputStream(infile);
+                            outputStream.write(line.getBytes());
+                            outputStream.close();
+                        }
+
                     }
 
+                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
 
-                JSONArray jsonArray = new JSONArray(dataCollected);
-                JSONArray insideJSON = jsonArray.getJSONArray(1);
+                    JSONArray jsonArray = new JSONArray(dataCollected);
+                    JSONArray insideJSON = jsonArray.getJSONArray(1);
 
-                for (int x = 0; x < insideJSON.length(); x++) {
+                    for (int x = 0; x < insideJSON.length(); x++) {
 
-                    JSONObject object = insideJSON.getJSONObject(x);
-                    String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
-                    String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
-                    String year = object.getString("date");
-                    String value = object.getString("value");
-                    if (!value.equals("null")) {
-                        for (String iso : allISOs) {
+                        JSONObject object = insideJSON.getJSONObject(x);
+                        String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
+                        int date = Integer.parseInt(object.getString("date"));
+                        String value = object.getString("value");
+                        if (!value.equals("null")) {
+                            for (String iso : allISOs) {
 
-                            if (iso.equals(countryISO)) {
-                                String key = dataIndicator + year;
-                                if (!hashMap.containsKey(key)) {
-                                    hashMap.put(key, new ArrayList<Entry>());
+                                if (iso.equals(countryISO)) {
+
+                                    if (!insideHashMap.containsKey(date)) {
+                                        insideHashMap.put(date, new ArrayList<Entry>());
+                                    }
+
+                                    ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
+                                    entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
+                                    break;
                                 }
-                                ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
-                                entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
-                                break;
                             }
                         }
                     }
+                    hashMap.put(category.type, insideHashMap);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
-
-            catch (Exception e){
 
             }
 
@@ -171,16 +189,8 @@ public class DataHandler extends Observable {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(AsyncCounter == indicators.length) {
-                dataLoaded();
-            }
+            dataLoaded();
         }
     }
-
-
-
-
-
-
 
 }

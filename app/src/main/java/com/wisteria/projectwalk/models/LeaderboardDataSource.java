@@ -1,5 +1,7 @@
 package com.wisteria.projectwalk.models;
 
+import java.util.ArrayList;
+
 /**
  * The datasource, from which the leaderboard gets it's data
  *
@@ -7,5 +9,5 @@ package com.wisteria.projectwalk.models;
  */
 public interface LeaderboardDataSource {
     public Entry entryForCountry(Country country);
-    public Entry entryForRanking(int ranking);
+    public ArrayList<Entry> getEntries();
 }
