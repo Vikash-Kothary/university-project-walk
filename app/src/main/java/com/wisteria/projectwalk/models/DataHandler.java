@@ -1,38 +1,27 @@
 package com.wisteria.projectwalk.models;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Observable;
-import java.util.Set;
 
 public class DataHandler extends Observable {
 
-    HashMap<String, ArrayList<Entry>> hashMap = new HashMap();
+    HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
     private int minYear;
     private int maxYear;
-
 
     public String getIndicator(Category category, int year) {
         String[] categoryCodes = new String[]{
@@ -45,7 +34,6 @@ public class DataHandler extends Observable {
 
     }
 
-
     /** Total number of AsyncTasks running in parallel */
     int AsyncCounter = 0;
 
@@ -55,7 +43,6 @@ public class DataHandler extends Observable {
      */
     public DataHandler(Context context, int minYear, int maxYear){
         this.context = context;
-
         this.minYear = minYear;
         this.maxYear = maxYear;
     }
@@ -98,8 +85,9 @@ public class DataHandler extends Observable {
 
             String dataCollected = "";
 
-                BufferedReader input = null;
-                File file = null;
+            BufferedReader input;
+            File file;
+
                 try {
 
                     file = new File(context.getCacheDir(), dataIndicator);
@@ -114,6 +102,7 @@ public class DataHandler extends Observable {
                         }
 
                         dataCollected = cacheBuilder.toString();
+
                     } else {
 
                             BufferedReader br;
@@ -140,35 +129,39 @@ public class DataHandler extends Observable {
 
                     }
 
-                JSONArray jsonArray = new JSONArray(dataCollected);
-                JSONArray insideJSON = jsonArray.getJSONArray(1);
+                    HashMap<Integer,ArrayList<Entry>> insideHashMap = new HashMap<>();
+
+                    JSONArray jsonArray = new JSONArray(dataCollected);
+                    JSONArray insideJSON = jsonArray.getJSONArray(1);
 
                 for (int x = 0; x < insideJSON.length(); x++) {
 
                     JSONObject object = insideJSON.getJSONObject(x);
                     String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
                     String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
-                    String year = object.getString("date");
+                    int date = Integer.parseInt(object.getString("date"));
                     String value = object.getString("value");
                     if (!value.equals("null")) {
                         for (String iso : allISOs) {
 
                             if (iso.equals(countryISO)) {
-                                String key = category.type + year;
-                                if (!hashMap.containsKey(key)) {
-                                    hashMap.put(key, new ArrayList<Entry>());
+
+                                if(!insideHashMap.containsKey(date)){
+                                    insideHashMap.put(date, new ArrayList<Entry>());
                                 }
-                                ArrayList<Entry> entries = (ArrayList) hashMap.get(key);
-                                entries.add(new Entry((Integer.parseInt(year)), new Country(country), Double.parseDouble(value)));
+
+                                ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
+                                entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
                                 break;
                             }
                         }
                     }
                 }
+                    hashMap.put(category.type, insideHashMap);
             }
 
             catch (Exception e){
-
+                e.printStackTrace();
             }
 
             AsyncCounter++;
@@ -181,11 +174,5 @@ public class DataHandler extends Observable {
             dataLoaded();
         }
     }
-
-
-
-
-
-
 
 }

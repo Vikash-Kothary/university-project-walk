@@ -20,7 +20,7 @@ import java.util.Observer;
 
 public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate, YearSliderDataSource {
     private static Manager sharedInstance = new Manager();
-    private HashMap<String, ArrayList<Entry>> allEntries;
+    HashMap<String,HashMap<Integer,ArrayList<Entry>>> allEntries;
 
     private ManagerCallback managerCallback;
 
@@ -36,7 +36,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private DataHandler dataHandler;
 
     private Category category = Category.FossilFuel;
-
 
     Context activity;
     public void setContext(Context context){
@@ -73,7 +72,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public Entry entryForRanking(int ranking) {
         Log.i("Manager", "Getting entries for "+category.type + currentYear);
 
-        ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
 
 //        if (entries != null) {
             return entries.get(ranking - 1);
@@ -88,7 +87,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      * @return the entry
      */
     public Entry entryForCountry(Country country) {
-        ArrayList<Entry> entries = allEntries.get(category.type + currentYear);
+        ArrayList<Entry> entries = allEntries.get(category.type).get(currentYear);
 
         if (entries == null)
             return null;
@@ -108,21 +107,18 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      */
     public void populateEntries(Category category, int currentYear) {
         // check if entries are  present in hashmap for this category and year
-        if (allEntries.containsKey(category.type + currentYear)) {
+        if (allEntries.get(category.type).get(currentYear) != null) {
             return;
         }
 
         dataHandler.retrieveNewData(category, currentYear);
         // if not get the data from the api
         // add it to the hashmap
-        ArrayList<Entry> entries;
+        //ArrayList<Entry> entries;
        // allEntries.put(category.type+currentYear, entries);
         // sort it with comparator
 
-
-
     }
-
 
     public void setManagerCallback(ManagerCallback managerCallback) {
         this.managerCallback = managerCallback;
@@ -135,32 +131,21 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         allEntries = (HashMap) handler.getHashMap().clone();
 
-        Iterator iterator = allEntries.entrySet().iterator();
+        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
 
-        Log.i("Total number ", "" + allEntries.size());
+        Collections.sort(entries,compareEntries);
+        Collections.reverse(entries);
 
-        while(iterator.hasNext()) {
-            Map.Entry pair = (Map.Entry) iterator.next();
-            ArrayList<Entry> entries = (ArrayList<Entry>) pair.getValue();
+        if(entries.get(0).getPercentage() > 100) {
 
-            Collections.sort(entries, compareEntries);
-            Collections.reverse(entries);
-
-            Log.i(pair.getKey() + "", "" + entries.size());
-
-            if(entries.get(0).getPercentage() > 100){
-
-                for(Entry entry : entries){
-
-                    entry.setTempPercentage();
-                    entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
-
-                }
-
+            for (Entry entry : entries) {
+                entry.setTempPercentage();
+                entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
             }
 
-
         }
+
+        Log.i("Total number ", "" + allEntries.size());
 
         managerCallback.dataIsReady(category, currentYear);
 
@@ -177,18 +162,17 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         ArrayList<Integer> arrayList = new ArrayList<>();
 
         for (int i = minYear; i <= maxYear; i++) {
-            if (allEntries.get(category.type + i) != null)
+            if (allEntries.get(category.type).get(i) != null)
                 arrayList.add(i);
         }
 
-        System.out.println("Available years: "+ arrayList.toString());
+        Log.i("Manager","Available years: " + arrayList.toString());
 
         return arrayList;
     }
 
-
-
     public Category getCategory() {
         return category;
     }
+
 }
