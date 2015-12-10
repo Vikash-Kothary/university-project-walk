@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.wisteria.projectwalk.R;
@@ -16,8 +15,8 @@ import com.wisteria.projectwalk.models.Category;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
 import com.wisteria.projectwalk.views.LeaderboardChart;
-import com.wisteria.projectwalk.views.YearSlider;
 import com.wisteria.projectwalk.views.slider.SliderLayout;
+import com.wisteria.projectwalk.views.slider.YearSlider;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
@@ -25,7 +24,7 @@ import com.wisteria.projectwalk.views.slider.SliderLayout;
 public class MainActivity extends Activity implements ManagerCallback {
 
     private Manager manager = Manager.getInstance();
-    private SliderLayout yearSlider;
+    private YearSlider yearSlider;
     private Context context = this;
     private LeaderboardChart leaderboardChart;
 
@@ -88,7 +87,7 @@ public class MainActivity extends Activity implements ManagerCallback {
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
-                    yearSlider = new SliderLayout(context);
+                    yearSlider = new YearSlider(context);
                     yearSliderContainer.addView(yearSlider);
                 } else {
                     // Refresh data
