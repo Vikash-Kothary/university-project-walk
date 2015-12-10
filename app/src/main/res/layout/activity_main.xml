@@ -52,7 +52,6 @@
                 android:textSize="35sp"
                 android:textColor="#FFFFFF"
                 android:background="#00000000"
-                android:onClick="onClick"
                 />
 
             <Button
@@ -63,7 +62,6 @@
                 android:textSize="35sp"
                 android:textColor="#FFFFFF"
                 android:background="#00000000"
-                android:onClick="onClick2"
                 />
 
             <Button
@@ -74,7 +72,6 @@
                 android:textSize="35sp"
                 android:textColor="#FFFFFF"
                 android:background="#00000000"
-                android:onClick="onClick3"
                 />
 
             <Spinner
