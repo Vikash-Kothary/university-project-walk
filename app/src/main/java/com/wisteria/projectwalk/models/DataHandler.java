@@ -98,16 +98,19 @@ public class DataHandler extends Observable {
         @Override
         protected Void doInBackground(Object... params) {
 
-            String dataCollected = "";
 
-            BufferedReader input;
-            File file;
+            for(int y = minYear; y <maxYear+1; y++) {
+
+                String dataCollected = "";
+
+                BufferedReader input;
+                File file;
 
                 try {
 
-                    file = new File(context.getCacheDir(), dataIndicator);
+                    file = new File(context.getCacheDir(), category.type + y);
 
-                    if(file.exists()) {
+                    if (file.exists()) {
 
                         input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                         String line;
@@ -120,64 +123,63 @@ public class DataHandler extends Observable {
 
                     } else {
 
-                            BufferedReader br;
-                            URL url;
-                            String line;
-                            String newURL = "http://api.worldbank.org/countries" + dataIndicator;
+                        BufferedReader br;
+                        URL url;
+                        String line;
+                        String newURL = "http://api.worldbank.org/countries" + dataIndicator;
 
-                            url = new URL(newURL);
-                            URLConnection connection = url.openConnection();
+                        url = new URL(newURL);
+                        URLConnection connection = url.openConnection();
 
-                            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                            StringBuilder internetBuilder = new StringBuilder();
-                            while ((line = br.readLine()) != null) {
-                                internetBuilder.append(line);
-                                dataCollected = internetBuilder.toString();
-                                File infile;
-                                FileOutputStream outputStream;
-                                int year = 2004;
-                                infile = new File(context.getCacheDir(), category.type+year);
-                                outputStream = new FileOutputStream(infile);
-                                outputStream.write(line.getBytes());
-                                outputStream.close();
-                            }
+                        StringBuilder internetBuilder = new StringBuilder();
+                        while ((line = br.readLine()) != null) {
+                            internetBuilder.append(line);
+                            dataCollected = internetBuilder.toString();
+                            File infile;
+                            FileOutputStream outputStream;
+                            infile = new File(context.getCacheDir(), category.type + y);
+                            outputStream = new FileOutputStream(infile);
+                            outputStream.write(line.getBytes());
+                            outputStream.close();
+                        }
 
                     }
 
-                    HashMap<Integer,ArrayList<Entry>> insideHashMap = new HashMap<>();
+                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
 
                     JSONArray jsonArray = new JSONArray(dataCollected);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
 
-                for (int x = 0; x < insideJSON.length(); x++) {
+                    for (int x = 0; x < insideJSON.length(); x++) {
 
-                    JSONObject object = insideJSON.getJSONObject(x);
-                    String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
-                    String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
-                    int date = Integer.parseInt(object.getString("date"));
-                    String value = object.getString("value");
-                    if (!value.equals("null")) {
-                        for (String iso : allISOs) {
+                        JSONObject object = insideJSON.getJSONObject(x);
+                        String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
+                        int date = Integer.parseInt(object.getString("date"));
+                        String value = object.getString("value");
+                        if (!value.equals("null")) {
+                            for (String iso : allISOs) {
 
-                            if (iso.equals(countryISO)) {
+                                if (iso.equals(countryISO)) {
 
-                                if(!insideHashMap.containsKey(date)){
-                                    insideHashMap.put(date, new ArrayList<Entry>());
+                                    if (!insideHashMap.containsKey(date)) {
+                                        insideHashMap.put(date, new ArrayList<Entry>());
+                                    }
+
+                                    ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
+                                    entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
+                                    break;
                                 }
-
-                                ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
-                                entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
-                                break;
                             }
                         }
                     }
-                }
                     hashMap.put(category.type, insideHashMap);
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            catch (Exception e){
-                e.printStackTrace();
             }
 
             AsyncCounter++;
