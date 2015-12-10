@@ -65,11 +65,11 @@ public class LeaderboardChart extends HorizontalBarChart {
         }
 
 
-        BarDataSet dataset = new BarDataSet(entries, "Ranking");
+        BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
 
         dataset.setBarSpacePercent(0f);
-
-
+        dataset.setValueTextSize(20f);
+        dataset.setColor();
 
         BarData data = new BarData(labels, dataset);
         setData(data);

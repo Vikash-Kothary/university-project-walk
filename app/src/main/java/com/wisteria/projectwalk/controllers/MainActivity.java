@@ -2,8 +2,12 @@ package com.wisteria.projectwalk.controllers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
@@ -28,17 +32,47 @@ public class MainActivity extends Activity implements ManagerCallback {
         setContentView(R.layout.activity_main);
 
 
-
         manager.setManagerCallback(this);
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        manager.setContext(this);
+        manager.initManager();
 
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
 
+        Button button = (Button) findViewById(R.id.button_cloud);
+        Button button2 = (Button) findViewById(R.id.button_fuel);
+        Button button3 = (Button) findViewById(R.id.button_tree);
 
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
 
+        //Set the typeface
+        button.setTypeface(font);
+        button2.setTypeface(font);
+        button3.setTypeface(font);
 
+        View.OnClickListener listner = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.button_cloud:
+                        manager.setCategory(Category.C02Emissions);
+                        break;
+                    case R.id.button_fuel:
+                        manager.setCategory(Category.ForestArea);
+                        break;
+
+                    case R.id.button_tree:
+                        manager.setCategory(Category.FossilFuel);
+                        break;
+                }
+                //manager.setCategory(Category.);
+            }
+        };
+        //button.setOnClickListener(listner);
     }
 
     @Override
