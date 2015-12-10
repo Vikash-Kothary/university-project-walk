@@ -93,6 +93,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     }
 
+    public ArrayList<Entry> getEntries() {
+        return allEntries.get(category.type + currentYear);
+    }
+
     /**
      * Returns the entry for a country
      * @param country (Country)
