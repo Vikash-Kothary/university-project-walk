@@ -6,14 +6,17 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
+import com.wisteria.projectwalk.views.CountryBar;
 import com.wisteria.projectwalk.views.LeaderboardChart;
 import com.wisteria.projectwalk.views.YearSlider;
 
@@ -26,6 +29,7 @@ public class MainActivity extends Activity implements ManagerCallback {
     private YearSlider yearSlider;
     private Context context = this;
     private LeaderboardChart leaderboardChart;
+    private CountryBar countryBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,6 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
         manager.setManagerCallback(this);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         manager.setContext(this);
         manager.initManager();
@@ -43,6 +46,42 @@ public class MainActivity extends Activity implements ManagerCallback {
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
+
+        final Spinner spin = (Spinner)findViewById(R.id.spinner);
+
+        LinearLayout CountryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+        countryBar = new CountryBar(context);
+        CountryBarLayout.addView(countryBar);
+
+
+
+
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                try {
+                    String cname = spin.getSelectedItem().toString();
+
+                    if (cname != null){
+                        countryBar.refresh(cname);
+                    }
+
+                }catch (NullPointerException e){
+
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Button button = (Button) findViewById(R.id.button_cloud);
         Button button2 = (Button) findViewById(R.id.button_fuel);
