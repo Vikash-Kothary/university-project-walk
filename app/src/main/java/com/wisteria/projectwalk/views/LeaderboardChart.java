@@ -36,7 +36,8 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         setTouchEnabled(true);
         setDragEnabled(true);
-        setPinchZoom(true);
+        setPinchZoom(false);
+        setDoubleTapToZoomEnabled(false);
         setVisibleXRangeMinimum(2);
 
 

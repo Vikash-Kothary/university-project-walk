@@ -34,7 +34,8 @@ public class CountryBar extends HorizontalBarChart {
 
         setTouchEnabled(true);
         setDragEnabled(true);
-        setPinchZoom(true);
+        setPinchZoom(false);
+        setDoubleTapToZoomEnabled(false);
         setVisibleXRangeMinimum(2);
 
         setDrawGridBackground(false);
