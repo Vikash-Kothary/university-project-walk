@@ -94,7 +94,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     public ArrayList<Entry> getEntries() {
-        return allEntries.get(category.type + currentYear);
+        return allEntries.get(category.type).get(currentYear);
     }
 
     /**

@@ -69,7 +69,7 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         dataset.setBarSpacePercent(0f);
         dataset.setValueTextSize(20f);
-        dataset.setColor();
+        dataset.setColor(Color.GREEN);
 
         BarData data = new BarData(labels, dataset);
         setData(data);
