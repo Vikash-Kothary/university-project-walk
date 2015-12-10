@@ -4,4 +4,18 @@
     <string name="leaderboard_ranking_header">Ranking</string>
     <string name="leaderboard_country_header">Country</string>
     <string name="leaderboard_bar_header"></string>
+    <string name="icon_tree">&#xf1bb;</string>
+    <string name="icon_cloud">&#xf0c2;</string>
+    <string name="icon_fuel">&#xf043;</string>
+    <string-array name="country">
+        <item>Your Country</item>
+        <item >uk</item>
+        <item >germany</item>
+        <item >italy</item>
+        <item >france</item>
+        <item >czech</item>
+        <item >spain</item>
+        <item >wales</item>
+    </string-array>
+
 </resources>
