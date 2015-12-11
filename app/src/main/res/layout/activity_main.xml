@@ -80,11 +80,12 @@
                 android:layout_marginTop="4dp" />
 
             <Button
-                android:layout_width="70dp"
-                android:text="@string/Average_button_name"
+                android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/button_average"
                 android:textSize="35sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/average"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="4dp" />
 
