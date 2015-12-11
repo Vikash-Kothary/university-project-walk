@@ -131,15 +131,9 @@ public class MainActivity extends Activity implements ManagerCallback {
             @Override
             public void run() {
                 leaderboardChart.refresh();
-<<<<<<< HEAD
-              //  Log.i(TAG, "Refresh and user's country is "+manager.getUsersCountry().getCountryName());
-                if (manager.getUsersCountry() != null)
-                    countryBar.refresh();
-=======
                 Log.i(TAG, "Refresh and user's country is " + manager.getUsersCountry().getCountryName());
 //                if (manager.getUsersCountry() != null)
 //                    countryBar.refresh();
->>>>>>> develop
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
