@@ -33,4 +33,5 @@ public class ApplicationTest {
         ArrayList<Entry> entries = manager.getEntries();
         assertEquals("Gets at least one entry from the World Bank API", entries.size() == 0, false);
     }
+
 }

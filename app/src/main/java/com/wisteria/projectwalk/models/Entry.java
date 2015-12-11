@@ -59,8 +59,16 @@ public class Entry {
         return country;
     }
 
+    public int getYear() {
+        return year;
+    }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "year=" + year +
+                ", country=" + country +
+                ", percentage=" + percentage +
+                '}';
+    }
 }

@@ -120,7 +120,13 @@ public class MainActivity extends Activity implements ManagerCallback {
 
         button.setOnClickListener(listener);
         button2.setOnClickListener(listener);
-        button3.setOnClickListener(listener);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.calculateAverages();
+                Log.i(TAG, ""+ manager.getEntries(Category.Average, 2004));
+            }
+        });
     }
 
     @Override
