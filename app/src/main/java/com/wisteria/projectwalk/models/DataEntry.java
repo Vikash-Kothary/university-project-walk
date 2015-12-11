@@ -6,10 +6,10 @@ import android.widget.MultiAutoCompleteTextView;
 import java.util.ArrayList;
 
 /**
- * An Entry consists of a int year and a Number value
+ * An DataEntry consists of a int year and a Number value
  * Used to represent a record of data at point of time for a country
  */
-public class Entry {
+public class DataEntry {
 
     private int year;
     private Country country;
@@ -27,7 +27,7 @@ public class Entry {
     }
 
 
-    public Entry(int year, Country country, double percentage) {
+    public DataEntry(int year, Country country, double percentage) {
         this.year = year;
         this.country = country;
         this.percentage = percentage;

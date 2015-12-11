@@ -13,17 +13,20 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+    public HashMap<String,HashMap<Integer,ArrayList<DataEntry>>> hashMap = new HashMap();
     private Context context;
 
     public String getIndicator(Category category, int minYear, int maxYear) {
@@ -145,7 +148,7 @@ public class DataHandler extends Observable {
 
                     }
 
-                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
+                    HashMap<Integer, ArrayList<DataEntry>> insideHashMap = new HashMap<>();
 
                     JSONArray jsonArray = new JSONArray(dataCollected);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
@@ -165,11 +168,11 @@ public class DataHandler extends Observable {
                                 if (iso.equals(countryISO)) {
 
                                     if (!insideHashMap.containsKey(date)) {
-                                        insideHashMap.put(date, new ArrayList<Entry>());
+                                        insideHashMap.put(date, new ArrayList<DataEntry>());
                                     }
 
-                                    ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
-                                    entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
+                                    ArrayList<DataEntry> entries = (ArrayList) insideHashMap.get(date);
+                                    entries.add(new DataEntry(date, new Country(country), Double.parseDouble(value)));
                                     break;
                                 }
                             }
@@ -177,15 +180,15 @@ public class DataHandler extends Observable {
                         }
                     }
 
-                    for(ArrayList<Entry> lists : insideHashMap.values()){
+                    for(ArrayList<DataEntry> lists : insideHashMap.values()){
 
                         Collections.sort(lists,compareEntries);
                         Collections.reverse(lists);
 
                         if(lists.get(0).getPercentage() > 100) {
-                            for (Entry entry : lists) {
-                                entry.setTempPercentage();
-                                entry.setPercentage(entry.getTempPercentage() / lists.get(0).getTempPercentage() * 100);
+                            for (DataEntry dataEntry : lists) {
+                                dataEntry.setTempPercentage();
+                                dataEntry.setPercentage(dataEntry.getTempPercentage() / lists.get(0).getTempPercentage() * 100);
                             }
 
                         }
@@ -203,9 +206,9 @@ public class DataHandler extends Observable {
             return null;
         }
 
-        Comparator<Entry> compareEntries = new Comparator<Entry>(){
-            public int compare(Entry entry1, Entry entry2) {
-                return Double.compare(entry1.getPercentage(), entry2.getPercentage());
+        Comparator<DataEntry> compareEntries = new Comparator<DataEntry>(){
+            public int compare(DataEntry dataEntry1, DataEntry dataEntry2) {
+                return Double.compare(dataEntry1.getPercentage(), dataEntry2.getPercentage());
             }
         };
 
@@ -213,6 +216,22 @@ public class DataHandler extends Observable {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             dataLoaded();
+            saveData();
+        }
+
+        private void saveData() {
+            Set<Map.Entry<String, HashMap<Integer, ArrayList<DataEntry>>>> entrySet = hashMap.entrySet();
+
+            for (Map.Entry categoryEntry:
+                 entrySet) {
+
+
+
+                for (Map.Entry :
+                categoryEntry.getValue()) {
+
+                }
+            }
         }
     }
 

@@ -4,14 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.wisteria.projectwalk.R;
-import com.wisteria.projectwalk.models.Entry;
+import com.wisteria.projectwalk.models.DataEntry;
 import com.wisteria.projectwalk.models.LeaderboardDataSource;
 import com.wisteria.projectwalk.models.Manager;
 
@@ -57,7 +55,7 @@ public class LeaderboardChart extends HorizontalBarChart {
     }
 
     public void refresh() {
-        ArrayList<Entry> dataEntries = dataSource.getEntries();
+        ArrayList<DataEntry> dataEntries = dataSource.getEntries();
 
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();

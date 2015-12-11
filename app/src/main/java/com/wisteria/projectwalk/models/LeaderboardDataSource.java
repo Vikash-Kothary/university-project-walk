@@ -1,7 +1,5 @@
 package com.wisteria.projectwalk.models;
 
-import android.graphics.Color;
-
 import java.util.ArrayList;
 
 /**
@@ -10,7 +8,7 @@ import java.util.ArrayList;
  * Created by martinkubat on 06/12/15.
  */
 public interface LeaderboardDataSource {
-    public Entry entryForUsersCountry();
-    public ArrayList<Entry> getEntries();
+    public DataEntry entryForUsersCountry();
+    public ArrayList<DataEntry> getEntries();
     public int colorForBar();
 }

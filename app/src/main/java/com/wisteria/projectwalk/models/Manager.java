@@ -72,9 +72,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         populateEntries(category, currentYear);
     }
 
-    public ArrayList<Entry> getEntries() {
-        HashMap<Integer, ArrayList<Entry>> hashMap;
-        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
+    public ArrayList<DataEntry> getEntries() {
+        HashMap<Integer, ArrayList<DataEntry>> hashMap;
+        hashMap = (HashMap<Integer, ArrayList<DataEntry>>) dataHandler.getHashMap().get(category.type);
         return hashMap.get(currentYear);
     }
 
@@ -90,9 +90,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return Color.BLACK;
     }
 
-    public ArrayList<Entry> getEntries(Category category, int currentYear) {
-        HashMap<Integer, ArrayList<Entry>> hashMap;
-        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
+    public ArrayList<DataEntry> getEntries(Category category, int currentYear) {
+        HashMap<Integer, ArrayList<DataEntry>> hashMap;
+        hashMap = (HashMap<Integer, ArrayList<DataEntry>>) dataHandler.getHashMap().get(category.type);
         return hashMap.get(currentYear);
     }
 
@@ -100,15 +100,15 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      * Returns the entry for the user's country
      * @return the entry
      */
-    public Entry entryForUsersCountry() {
-        ArrayList<Entry> entries = getEntries();
+    public DataEntry entryForUsersCountry() {
+        ArrayList<DataEntry> entries = getEntries();
 
         if (entries == null)
             return null;
 
-        for (Entry entry: entries) {
-            if (entry.getCountry().equals(usersCountry))
-                return entry;
+        for (DataEntry dataEntry : entries) {
+            if (dataEntry.getCountry().equals(usersCountry))
+                return dataEntry;
         }
 
         return null;

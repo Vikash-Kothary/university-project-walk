@@ -1,8 +1,6 @@
 package com.wisteria.projectwalk.views;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.style.SuperscriptSpan;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
@@ -10,8 +8,7 @@ import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.wisteria.projectwalk.models.Country;
-import com.wisteria.projectwalk.models.Entry;
+import com.wisteria.projectwalk.models.DataEntry;
 import com.wisteria.projectwalk.models.LeaderboardDataSource;
 import com.wisteria.projectwalk.models.Manager;
 
@@ -57,10 +54,10 @@ public class CountryBar extends HorizontalBarChart {
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        Entry countryEntry = dataSource.entryForUsersCountry();
-        if (countryEntry != null) {
-            entries.add(new BarEntry((int) countryEntry.getPercentage(), 0));
-            labels.add(countryEntry.getCountry().getCountryName());
+        DataEntry countryDataEntry = dataSource.entryForUsersCountry();
+        if (countryDataEntry != null) {
+            entries.add(new BarEntry((int) countryDataEntry.getPercentage(), 0));
+            labels.add(countryDataEntry.getCountry().getCountryName());
         }
 
         BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
