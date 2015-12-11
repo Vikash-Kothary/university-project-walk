@@ -35,7 +35,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private int maxYear = 2015;
     private Category category = Category.ForestArea;
     private Country usersCountry;
-
     private DataHandler dataHandler;
     private Context context;
 
@@ -64,10 +63,13 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     }
 
+<<<<<<< HEAD
     /**
      * Sets the current year selected by the user based on the position of the slider
      * @param currentYear The current year viewed by the user
      */
+=======
+>>>>>>> develop
     public void setCurrentYear(int currentYear) {
         Log.i(TAG, "Setting current year to " + currentYear);
         this.currentYear = currentYear;
@@ -124,11 +126,13 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return Color.BLACK;
     }
 
+
     /**
      * Returns the entry for the user's country
      * @return the entry
      */
     public Entry entryForUsersCountry() {
+
         ArrayList<Entry> entries = getEntries();
 
         if (entries == null)
@@ -153,15 +157,20 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             managerCallback.dataIsReady(category, currentYear);
             return;
         }
+<<<<<<< HEAD
         // TODO Prioritize this somehow
         dataHandler.retrieveNewData(category, currentYear);
 
+=======
+        
+>>>>>>> develop
         if (category == Category.Average) {
             calculateAverages();
         } else {
             // TODO Prioritize this somehow
             dataHandler.retrieveNewData(category, currentYear);
         }
+
 
     }
 
@@ -172,9 +181,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     @Override
     public void update(Observable observable, Object data) {
         Log.i("Manager", "update");
-
         managerCallback.dataIsReady(category, currentYear);
-
     }
 
     /**
@@ -191,7 +198,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         ArrayList<Integer> yearsList = new ArrayList<>(years[category.ordinal()]);
         Collections.sort(yearsList);
-
         return yearsList;
     }
 
