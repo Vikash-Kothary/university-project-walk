@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Observable;
@@ -21,9 +23,8 @@ import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-    HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
-
 
     public String getIndicator(Category category, int minYear, int maxYear) {
         String[] categoryCodes = new String[]{
@@ -33,7 +34,6 @@ public class DataHandler extends Observable {
         };
 
         return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
-
     }
 
     /** Total number of AsyncTasks running in parallel */
@@ -73,7 +73,6 @@ public class DataHandler extends Observable {
         setChanged();
         notifyObservers();
     }
-
     /**
      * Requests data using the provided indicators
      */
@@ -97,7 +96,6 @@ public class DataHandler extends Observable {
 
         @Override
         protected Void doInBackground(Object... params) {
-
 
             for(int y = minYear; y <maxYear+1; y++) {
 
@@ -159,7 +157,9 @@ public class DataHandler extends Observable {
                         String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
                         int date = Integer.parseInt(object.getString("date"));
                         String value = object.getString("value");
+
                         if (!value.equals("null")) {
+
                             for (String iso : allISOs) {
 
                                 if (iso.equals(countryISO)) {
@@ -173,9 +173,26 @@ public class DataHandler extends Observable {
                                     break;
                                 }
                             }
+
                         }
                     }
+
+                    for(ArrayList<Entry> lists : insideHashMap.values()){
+
+                        Collections.sort(lists,compareEntries);
+                        Collections.reverse(lists);
+
+                        if(lists.get(0).getPercentage() > 100) {
+                            for (Entry entry : lists) {
+                                entry.setTempPercentage();
+                                entry.setPercentage(entry.getTempPercentage() / lists.get(0).getTempPercentage() * 100);
+                            }
+
+                        }
+                    }
+
                     hashMap.put(category.type, insideHashMap);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -185,6 +202,12 @@ public class DataHandler extends Observable {
             AsyncCounter++;
             return null;
         }
+
+        Comparator<Entry> compareEntries = new Comparator<Entry>(){
+            public int compare(Entry entry1, Entry entry2) {
+                return Double.compare(entry1.getPercentage(), entry2.getPercentage());
+            }
+        };
 
         @Override
         protected void onPostExecute(Void aVoid) {

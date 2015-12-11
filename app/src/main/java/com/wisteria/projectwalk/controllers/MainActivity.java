@@ -10,26 +10,30 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
+import com.wisteria.projectwalk.models.Country;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
 import com.wisteria.projectwalk.views.CountryBar;
 import com.wisteria.projectwalk.views.LeaderboardChart;
-import com.wisteria.projectwalk.views.YearSlider;
+import com.wisteria.projectwalk.views.slider.YearSlider;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
  */
 public class MainActivity extends Activity implements ManagerCallback {
+    private static final String TAG = "MainActivity";
 
     private Manager manager = Manager.getInstance();
     private YearSlider yearSlider;
     private Context context = this;
     private LeaderboardChart leaderboardChart;
     private CountryBar countryBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +42,8 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
         manager.setManagerCallback(this);
-
         manager.setContext(this);
         manager.initManager();
-
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardContainerLayout.removeAllViews();
@@ -49,32 +51,20 @@ public class MainActivity extends Activity implements ManagerCallback {
         leaderboardContainerLayout.addView(leaderboardChart);
 
 
-        final Spinner spin = (Spinner)findViewById(R.id.spinner);
+        final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
 
-        final LinearLayout CountryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
-        countryBar = new CountryBar(context);
-        CountryBarLayout.addView(countryBar);
+//        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+//        countryBar = new CountryBar(context);
+//        countryBarLayout.addView(countryBar);
 
-
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0){
-                    countryBar = new CountryBar(context);
-                    CountryBarLayout.removeAllViews();
-                    CountryBarLayout.addView(countryBar);
-                }else {
-                    try {
-                        String cname = spin.getSelectedItem().toString();
+                try {
+                    String cname = countrySpinner.getSelectedItem().toString();
+                    manager.setUsersCountry(new Country(cname));
+                } catch (NullPointerException e) {
 
-                        if (cname != null) {
-                            countryBar.refresh(cname);
-                            countryBar.invalidate();
-                        }
-
-                    } catch (NullPointerException e) {
-
-                    }
                 }
             }
 
@@ -88,14 +78,30 @@ public class MainActivity extends Activity implements ManagerCallback {
         Button button2 = (Button) findViewById(R.id.button_fuel);
         Button button3 = (Button) findViewById(R.id.button_tree);
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        //for the Fonts
+        TextView FontTextview = (TextView) findViewById(R.id.textView3);
+        TextView FontTrees = (TextView) findViewById(R.id.textView2);
+        TextView FontEnviorment = (TextView) findViewById(R.id.textView);
 
-        //Set the typeface
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        Typeface fontText = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Light.ttf");
+        Typeface fontTree = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Bold.ttf");
+        Typeface fontEnvir = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Regular.ttf");
+
+        //Set the typeface for Buttons
         button.setTypeface(font);
         button2.setTypeface(font);
         button3.setTypeface(font);
 
-        View.OnClickListener listner = new View.OnClickListener() {
+        //Set the typeface for fonts
+        FontTextview.setTypeface(fontText);
+        FontTrees.setTypeface(fontTree);
+        FontEnviorment.setTypeface(fontEnvir);
+
+
+
+
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -109,22 +115,25 @@ public class MainActivity extends Activity implements ManagerCallback {
                         manager.setCategory(Category.FossilFuel);
                         break;
                 }
-                LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
-                leaderboardContainerLayout.removeAllViews();
-                leaderboardChart = new LeaderboardChart(context);
-                leaderboardContainerLayout.addView(leaderboardChart);
             }
         };
+
+        button.setOnClickListener(listener);
+        button2.setOnClickListener(listener);
+        button3.setOnClickListener(listener);
     }
 
     @Override
     public void dataIsReady(Category category, int year) {
-        Log.i("MainActivity", "data is ready for category "+category+", year "+year);
+        Log.i("MainActivity", "data is ready for category " + category + ", year " + year);
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 leaderboardChart.refresh();
+                Log.i(TAG, "Refresh and user's country is " + manager.getUsersCountry().getCountryName());
+//                if (manager.getUsersCountry() != null)
+//                    countryBar.refresh();
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);

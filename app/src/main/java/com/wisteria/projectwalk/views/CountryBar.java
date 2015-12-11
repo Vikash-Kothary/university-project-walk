@@ -53,34 +53,27 @@ public class CountryBar extends HorizontalBarChart {
 
     }
 
-    public void refresh(String s) {
-        ArrayList<Entry> dataEntries = dataSource.getEntries();
-
+    public void refresh() {
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < dataEntries.size(); i++) {
-
-            if (s.equals(dataEntries.get(i).getCountry().getCountryName())){
-                entries.add(new BarEntry((int) dataEntries.get(i).getPercentage(), 0));
-                labels.add(dataEntries.get(i).getCountry().getCountryName());
-            }
-
-
-
+        Entry countryEntry = dataSource.entryForUsersCountry();
+        if (countryEntry != null) {
+            entries.add(new BarEntry((int) countryEntry.getPercentage(), 0));
+            labels.add(countryEntry.getCountry().getCountryName());
         }
-
-
-
 
         BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
 
         dataset.setBarSpacePercent(0f);
         dataset.setValueTextSize(20f);
-//        dataset.setColor(Color.parseColor("50E399"));
+
+        dataset.setColor(dataSource.colorForBar()); 
 
         BarData data = new BarData(labels, dataset);
         setData(data);
+
+
 
     }
 }
