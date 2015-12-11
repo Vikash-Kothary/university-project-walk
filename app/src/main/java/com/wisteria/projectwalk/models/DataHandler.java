@@ -25,14 +25,10 @@ import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-<<<<<<< HEAD
-    public HashMap<String, HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
-=======
     /**  A HashMap storing HashMaps    */
     public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
 
     /**  The Main Activity passed from MainActivity */
->>>>>>> origin/new-feature-better-cache
     private Context context;
 
     /**
@@ -207,10 +203,6 @@ public class DataHandler extends Observable {
             if (minFound <= minYear && maxFound >= maxYear)
                 return null;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/new-feature-better-cache
             StringBuilder collectedData = new StringBuilder();
             StringBuilder cacheBuilder = new StringBuilder();
 

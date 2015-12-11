@@ -55,8 +55,6 @@ public class LeaderboardChart extends HorizontalBarChart {
     public void refresh() {
         ArrayList<Entry> dataEntries = dataSource.getEntries();
 
-        Log.i("", "refresh"+dataEntries);
-
         if (dataEntries == null)
             return;
 
