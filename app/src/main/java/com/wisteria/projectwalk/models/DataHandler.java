@@ -25,7 +25,7 @@ import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+    public HashMap<String, HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
 
     public String getIndicator(Category category, int minYear, int maxYear) {
@@ -96,7 +96,7 @@ public class DataHandler extends Observable {
         private int maxYear;
 
         public RetrieveData(Category category, int minYear, int maxYear, Context context){
-            Log.i("RetrieveData", "Retrieving data for "+ category +", "+minYear+", "+maxYear);
+
             this.context = context;
             this.dataIndicator = getIndicator(category, minYear, maxYear);
             this.category = category;
@@ -113,52 +113,69 @@ public class DataHandler extends Observable {
             String line = null;
             try {
 
-                File cacheFile = new File(context.getCacheDir(), category.type);
-                if(cacheFile.exists()) {
-                    FileReader fileReader = new FileReader(cacheFile);
+                Category[] categories = new Category[] {Category.C02Emissions, Category.ForestArea, Category.ForestArea};
+                for (Category lookupCategory :
+                        categories) {
+                    File cacheFile = new File(context.getCacheDir(), lookupCategory.type);
+                    if(cacheFile.exists()) {
+                        FileReader fileReader = new FileReader(cacheFile);
 
-                    BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-                    Log.i("", "THESE ARE IN THE CACHE");
-
-
-                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
-                    while ((line = bufferedReader.readLine()) != null) {
-                        System.out.println(line);
-
-                        String[] arr = line.split(",");
-
-                        Entry entry = new Entry(Integer.parseInt(arr[0]), new Country(arr[1]), Double.parseDouble(arr[2]));
+                        BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 
-                        ArrayList<Entry> entries = insideHashMap.get(entry.getYear());
-                        if (entries != null) {
-                            entries.add(entry);
-                        } else {
-                            ArrayList<Entry> newList = new ArrayList<>();
-                            newList.add(entry);
-                            insideHashMap.put(entry.getYear(), newList);
+
+                        HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
+                        while ((line = bufferedReader.readLine()) != null) {
+                            System.out.println(line);
+
+                            String[] arr = line.split(",");
+
+                            Entry entry = new Entry(Integer.parseInt(arr[0]), new Country(arr[1]), Double.parseDouble(arr[2]));
+
+
+                            ArrayList<Entry> entries = insideHashMap.get(entry.getYear());
+                            if (entries != null) {
+                                entries.add(entry);
+                            } else {
+                                ArrayList<Entry> newList = new ArrayList<>();
+                                newList.add(entry);
+                                insideHashMap.put(entry.getYear(), newList);
+                            }
+
+
+                            if (lookupCategory == category) {
+                                minFound = Math.min(entry.getYear(), minFound);
+                                maxFound = Math.max(entry.getYear(), maxFound);
+
+                            }
+
+                            hashMap.put(category.type, insideHashMap);
+
                         }
 
-                        minFound = Math.min(entry.getYear(), minFound);
-                        maxFound = Math.max(entry.getYear(), maxFound);
+                        bufferedReader.close();
 
+                        for(ArrayList<Entry> lists : insideHashMap.values()){
+                            Collections.sort(lists,compareEntries);
+                            Collections.reverse(lists);
 
-                        hashMap.put(category.type, insideHashMap);
+                            if(lists.get(0).getPercentage() > 100) {
+                                for (Entry entry : lists) {
+                                    entry.setTempPercentage();
+                                    entry.setPercentage(entry.getTempPercentage() / lists.get(0).getTempPercentage() * 100);
+                                }
 
+                            }
+                        }
                     }
-
-                    bufferedReader.close();
                 }
+
             } catch (Exception e) {
 
             }
 
             if (minFound <= minYear && maxFound >= maxYear)
                 return null;
-
-
-
 
             StringBuilder collectedData = new StringBuilder();
             StringBuilder cacheBuilder = new StringBuilder();
@@ -207,8 +224,6 @@ public class DataHandler extends Observable {
                     }
 
                     dataCollected = internetBuilder.toString();
-
-                    Log.i("", "dataCollected" + dataCollected);
 
                     HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
                     JSONArray jsonArray = new JSONArray(dataCollected);
@@ -259,7 +274,6 @@ public class DataHandler extends Observable {
                     }
 
                     hashMap.put(category.type, insideHashMap);
-                    Log.i("", "hashMap" + hashMap);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -270,7 +284,6 @@ public class DataHandler extends Observable {
             try{
 
                 outputStream = new FileOutputStream(file);
-                Log.i("DATAHANDLER", "collectedData" + collectedData.toString());
                 outputStream.write(collectedData.toString().getBytes());
                 outputStream.close();
 

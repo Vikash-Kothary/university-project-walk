@@ -132,8 +132,8 @@ public class MainActivity extends Activity implements ManagerCallback {
             public void run() {
                 leaderboardChart.refresh();
 
-//                if (manager.getUsersCountry() != null)
-//                    countryBar.refresh();
+                Log.i("", "Status check");
+                Log.i("", "" + manager.getHashmap().keySet());
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);

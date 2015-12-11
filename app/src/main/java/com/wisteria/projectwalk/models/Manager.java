@@ -170,5 +170,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         this.usersCountry = usersCountry;
     }
 
+    public HashMap<String, HashMap<Integer,ArrayList<Entry>>> getHashmap() {
+        return dataHandler.getHashMap();
+    }
 
 }
