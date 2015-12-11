@@ -124,14 +124,23 @@
 
 
 
+
     <LinearLayout
         android:id="@+id/leaderboard_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:orientation="vertical"
         android:layout_marginTop="30dp">
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/CountryBar_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Observable;
@@ -24,7 +26,6 @@ public class DataHandler extends Observable {
     HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
 
-
     public String getIndicator(Category category, int minYear, int maxYear) {
         String[] categoryCodes = new String[]{
                 "AG.LND.FRST.K2",
@@ -33,7 +34,6 @@ public class DataHandler extends Observable {
         };
 
         return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
-
     }
 
     /** Total number of AsyncTasks running in parallel */
@@ -73,7 +73,6 @@ public class DataHandler extends Observable {
         setChanged();
         notifyObservers();
     }
-
     /**
      * Requests data using the provided indicators
      */
@@ -98,16 +97,18 @@ public class DataHandler extends Observable {
         @Override
         protected Void doInBackground(Object... params) {
 
-            String dataCollected = "";
+            for(int y = minYear; y <maxYear+1; y++) {
 
-            BufferedReader input;
-            File file;
+                String dataCollected = "";
+
+                BufferedReader input;
+                File file;
 
                 try {
 
-                    file = new File(context.getCacheDir(), dataIndicator);
+                    file = new File(context.getCacheDir(), category.type + y);
 
-                    if(file.exists()) {
+                    if (file.exists()) {
 
                         input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                         String line;
@@ -120,69 +121,93 @@ public class DataHandler extends Observable {
 
                     } else {
 
-                            BufferedReader br;
-                            URL url;
-                            String line;
-                            String newURL = "http://api.worldbank.org/countries" + dataIndicator;
+                        BufferedReader br;
+                        URL url;
+                        String line;
+                        String newURL = "http://api.worldbank.org/countries" + dataIndicator;
 
-                            url = new URL(newURL);
-                            URLConnection connection = url.openConnection();
+                        url = new URL(newURL);
+                        URLConnection connection = url.openConnection();
 
-                            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                            StringBuilder internetBuilder = new StringBuilder();
-                            while ((line = br.readLine()) != null) {
-                                internetBuilder.append(line);
-                                dataCollected = internetBuilder.toString();
-                                File infile;
-                                FileOutputStream outputStream;
-                                int year = 2004;
-                                infile = new File(context.getCacheDir(), category.type+year);
-                                outputStream = new FileOutputStream(infile);
-                                outputStream.write(line.getBytes());
-                                outputStream.close();
-                            }
+                        StringBuilder internetBuilder = new StringBuilder();
+                        while ((line = br.readLine()) != null) {
+                            internetBuilder.append(line);
+                            dataCollected = internetBuilder.toString();
+                            File infile;
+                            FileOutputStream outputStream;
+                            infile = new File(context.getCacheDir(), category.type + y);
+                            outputStream = new FileOutputStream(infile);
+                            outputStream.write(line.getBytes());
+                            outputStream.close();
+                        }
 
                     }
 
-                    HashMap<Integer,ArrayList<Entry>> insideHashMap = new HashMap<>();
+                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
 
                     JSONArray jsonArray = new JSONArray(dataCollected);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
 
-                for (int x = 0; x < insideJSON.length(); x++) {
+                    for (int x = 0; x < insideJSON.length(); x++) {
 
-                    JSONObject object = insideJSON.getJSONObject(x);
-                    String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
-                    String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
-                    int date = Integer.parseInt(object.getString("date"));
-                    String value = object.getString("value");
-                    if (!value.equals("null")) {
-                        for (String iso : allISOs) {
+                        JSONObject object = insideJSON.getJSONObject(x);
+                        String country = insideJSON.getJSONObject(x).getJSONObject("country").getString("value");
+                        String countryISO = insideJSON.getJSONObject(x).getJSONObject("country").getString("id");
+                        int date = Integer.parseInt(object.getString("date"));
+                        String value = object.getString("value");
 
-                            if (iso.equals(countryISO)) {
+                        if (!value.equals("null")) {
 
-                                if(!insideHashMap.containsKey(date)){
-                                    insideHashMap.put(date, new ArrayList<Entry>());
+                            for (String iso : allISOs) {
+
+                                if (iso.equals(countryISO)) {
+
+                                    if (!insideHashMap.containsKey(date)) {
+                                        insideHashMap.put(date, new ArrayList<Entry>());
+                                    }
+
+                                    ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
+                                    entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
+                                    break;
                                 }
-
-                                ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
-                                entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
-                                break;
                             }
+
                         }
                     }
-                }
-                    hashMap.put(category.type, insideHashMap);
-            }
 
-            catch (Exception e){
-                e.printStackTrace();
+                    for(ArrayList<Entry> lists : insideHashMap.values()){
+
+                        Collections.sort(lists,compareEntries);
+                        Collections.reverse(lists);
+
+                        if(lists.get(0).getPercentage() > 100) {
+                            for (Entry entry : lists) {
+                                entry.setTempPercentage();
+                                entry.setPercentage(entry.getTempPercentage() / lists.get(0).getTempPercentage() * 100);
+                            }
+
+                        }
+                    }
+
+                    hashMap.put(category.type, insideHashMap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
 
             AsyncCounter++;
             return null;
         }
+
+        Comparator<Entry> compareEntries = new Comparator<Entry>(){
+            public int compare(Entry entry1, Entry entry2) {
+                return Double.compare(entry1.getPercentage(), entry2.getPercentage());
+            }
+        };
 
         @Override
         protected void onPostExecute(Void aVoid) {

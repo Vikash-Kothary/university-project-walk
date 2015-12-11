@@ -2,15 +2,15 @@ package com.wisteria.projectwalk.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.style.SuperscriptSpan;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.wisteria.projectwalk.R;
+import com.wisteria.projectwalk.models.Country;
 import com.wisteria.projectwalk.models.Entry;
 import com.wisteria.projectwalk.models.LeaderboardDataSource;
 import com.wisteria.projectwalk.models.Manager;
@@ -18,15 +18,13 @@ import com.wisteria.projectwalk.models.Manager;
 import java.util.ArrayList;
 
 /**
- * Created by Shubham on 08/12/2015.
+ * Created by Shubham on 10/12/2015.
  */
-public class LeaderboardChart extends HorizontalBarChart {
+public class CountryBar extends HorizontalBarChart {
+
     private LeaderboardDataSource dataSource = Manager.getInstance();
-    private String filterString="";
 
-
-
-    public LeaderboardChart(Context context) {
+    public CountryBar(Context context){
         super(context);
 
         setLayoutParams(new LinearLayout.LayoutParams(
@@ -40,10 +38,6 @@ public class LeaderboardChart extends HorizontalBarChart {
         setDoubleTapToZoomEnabled(false);
         setVisibleXRangeMinimum(2);
 
-
-
-
-        zoom(30, 30, 1, 1);
         setDrawGridBackground(false);
 
         getXAxis().setDrawGridLines(false);
@@ -51,23 +45,32 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         getAxisLeft().setEnabled(false);
         getAxisRight().setEnabled(false);
-        getXAxis().setTextSize(12f);
+
+        getXAxis().setTextSize(30f);
+
+
 
 
     }
 
-    public void refresh() {
+    public void refresh(String s) {
         ArrayList<Entry> dataEntries = dataSource.getEntries();
 
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < dataEntries.size(); i++){
+        for (int i = 0; i < dataEntries.size(); i++) {
 
-                entries.add(new BarEntry((int)dataEntries.get(i).getPercentage(), i));
+            if (s.equals(dataEntries.get(i).getCountry().getCountryName())){
+                entries.add(new BarEntry((int) dataEntries.get(i).getPercentage(), 0));
                 labels.add(dataEntries.get(i).getCountry().getCountryName());
+            }
+
+
 
         }
+
+
 
 
         BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
@@ -79,24 +82,5 @@ public class LeaderboardChart extends HorizontalBarChart {
         BarData data = new BarData(labels, dataset);
         setData(data);
 
-
-        invalidate();
-    }
-
-
-
-
-    public void changeColor(Color color) {
-
-
-
-    }
-
-
-
-    public void filterData(String s) {
-        System.out.println(s);
-        filterString = s;
-        refresh();
     }
 }

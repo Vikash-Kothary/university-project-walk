@@ -141,36 +141,14 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void update(Observable observable, Object data) {
         Log.i("Manager", "update");
 
-        handler = (DataHandler) observable;
 
-        allEntries = (HashMap) handler.getHashMap().clone();
-
-        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
-
-        Collections.sort(entries,compareEntries);
-        Collections.reverse(entries);
-
-        if(entries.get(0).getPercentage() > 100) {
-
-            for (Entry entry : entries) {
-                entry.setTempPercentage();
-                entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
-            }
-
-        }
+        allEntries = dataHandler.getHashMap();
 
         Log.i("Total number ", "" + allEntries.size());
 
         managerCallback.dataIsReady(category, currentYear);
 
     }
-
-    Comparator<Entry> compareEntries = new Comparator<Entry>(){
-
-        public int compare(Entry entry1, Entry entry2) {
-            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
-        }
-    };
 
     public ArrayList<Integer> getAvailableYears() {
 
