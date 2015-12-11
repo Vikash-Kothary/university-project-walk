@@ -25,9 +25,23 @@ import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
+<<<<<<< HEAD
     public HashMap<String, HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+=======
+    /**  A HashMap storing HashMaps    */
+    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+
+    /**  The Main Activity passed from MainActivity */
+>>>>>>> origin/new-feature-better-cache
     private Context context;
 
+    /**
+     *
+     * @param category The category (indicator) to be loaded
+     * @param minYear The lowest year data will be pulled from
+     * @param maxYear The maximum year data will be pulled from
+     * @return A String comprised of the category, minimum and maximum year
+     */
     public String getIndicator(Category category, int minYear, int maxYear) {
         String[] categoryCodes = new String[]{
                 "AG.LND.FRST.K2",
@@ -48,6 +62,11 @@ public class DataHandler extends Observable {
         this.context = context;
     }
 
+    /**
+     * Creates a new AsyncTask using a thread pool that gets the data for a category and year
+     * @param category The category (indicator) of the data
+     * @param year The year of the data to be loaded
+     */
     public void retrieveNewData(Category category, int year) {
 
         retrieveNewData(category, year, year, AsyncTask.THREAD_POOL_EXECUTOR);
@@ -67,12 +86,19 @@ public class DataHandler extends Observable {
 
     }
 
+    /**
+     * @return A HashMap containing all the collected data.
+     */
     public HashMap getHashMap (){
         return hashMap;
     }
 
     String data;
     Category category;
+
+    /**
+     * Notifies observers of a statechange
+     */
     protected void dataLoaded(){
         setChanged();
         notifyObservers();
@@ -88,9 +114,12 @@ public class DataHandler extends Observable {
      */
     private class RetrieveData extends AsyncTask<Object,Void,Void> {
 
+
         private String dataIndicator;
         private Category category;
         private Context context;
+
+        /** An array containing all 2-character country codes*/
         private String[] allISOs = Locale.getISOCountries();
         private int minYear;
         private int maxYear;
@@ -106,6 +135,7 @@ public class DataHandler extends Observable {
 
         @Override
         protected Void doInBackground(Object... params) {
+
 
             int minFound = 10000;
             int maxFound = 0;
@@ -177,6 +207,10 @@ public class DataHandler extends Observable {
             if (minFound <= minYear && maxFound >= maxYear)
                 return null;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/new-feature-better-cache
             StringBuilder collectedData = new StringBuilder();
             StringBuilder cacheBuilder = new StringBuilder();
 
@@ -295,6 +329,9 @@ public class DataHandler extends Observable {
             return null;
         }
 
+        /**
+         * Sorts ArrayLists of Entry objects.
+         */
         Comparator<Entry> compareEntries = new Comparator<Entry>(){
             public int compare(Entry entry1, Entry entry2) {
                 return Double.compare(entry1.getPercentage(), entry2.getPercentage());

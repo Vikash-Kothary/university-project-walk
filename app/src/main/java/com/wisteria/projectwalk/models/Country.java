@@ -7,6 +7,7 @@ package com.wisteria.projectwalk.models;
 public class Country {
 
 
+
     public Country(String countryName) {
         this.countryName = countryName;
     }

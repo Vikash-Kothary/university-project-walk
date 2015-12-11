@@ -27,7 +27,6 @@ import com.wisteria.projectwalk.views.slider.YearSlider;
  */
 public class MainActivity extends Activity implements ManagerCallback {
     private static final String TAG = "MainActivity";
-
     private Manager manager = Manager.getInstance();
     private YearSlider yearSlider;
     private Context context = this;
