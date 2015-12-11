@@ -141,36 +141,14 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void update(Observable observable, Object data) {
         Log.i("Manager", "update");
 
-        handler = (DataHandler) observable;
 
-        allEntries = (HashMap) handler.getHashMap().clone();
-
-        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
-
-        Collections.sort(entries,compareEntries);
-        Collections.reverse(entries);
-
-        if(entries.get(0).getPercentage() > 100) {
-
-            for (Entry entry : entries) {
-                entry.setTempPercentage();
-                entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
-            }
-
-        }
+        allEntries = dataHandler.getHashMap();
 
         Log.i("Total number ", "" + allEntries.size());
 
         managerCallback.dataIsReady(category, currentYear);
 
     }
-
-    Comparator<Entry> compareEntries = new Comparator<Entry>(){
-
-        public int compare(Entry entry1, Entry entry2) {
-            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
-        }
-    };
 
     public ArrayList<Integer> getAvailableYears() {
 
@@ -180,7 +158,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
                 Arrays.asList(1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012)
         };
 
-        return new ArrayList<>(years[category.ordinal()]);
+        ArrayList<Integer> yearsList = new ArrayList<>(years[category.ordinal()]);
+        Collections.sort(yearsList);
+
+        return yearsList;
     }
 
     public Category getCategory() {
