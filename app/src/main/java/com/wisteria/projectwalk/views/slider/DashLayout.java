@@ -21,19 +21,35 @@ public class DashLayout extends LinearLayout {
     private ImageView dashView;
     private Context context;
 
-    public DashLayout(Context context, int year) {
+    private int year;
+
+    public DashLayout(Context context, int year, boolean isLast) {
         super(context);
         this.context = context;
+        this.year = year;
 
         setOrientation(VERTICAL);
 
+        LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        if (!isLast) {
+            layoutParams.setMargins(0, 0, 200, 0);
+        }
+
+        setLayoutParams(layoutParams);
+
         setupDashView();
         setupYearView(year);
+
     }
 
     public void setupYearView(int year) {
         yearView = new TextView(context);
         yearView.setText("" + year);
+        yearView.setTextSize(20);
         addView(yearView);
     }
 
@@ -41,9 +57,17 @@ public class DashLayout extends LinearLayout {
         dashView = new ImageView(context);
         dashView.setImageResource(R.drawable.dash);
         addView(dashView);
-        dashView.setLayoutParams(new LinearLayout.LayoutParams(
+
+        LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        );
+        dashView.setLayoutParams(layoutParams);
     }
+
+
+    public int getYear() {
+        return year;
+    }
+
 }

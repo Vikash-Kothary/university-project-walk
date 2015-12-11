@@ -3,6 +3,8 @@ package com.wisteria.projectwalk.views.slider;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -18,6 +20,7 @@ import com.wisteria.projectwalk.models.YearSliderDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 /**
  * Created by martinkubat on 08/12/15.
@@ -45,7 +48,7 @@ public class YearSlider extends FrameLayout {
 
         setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                112
+                142
         ));
 
 //        setBackgroundColor(Color.CYAN);
@@ -70,8 +73,7 @@ public class YearSlider extends FrameLayout {
         addView(pointerView);
         pointerView.setLayoutParams(new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                height/2
+                height / 2
         ));
     }
-
 }

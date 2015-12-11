@@ -15,7 +15,6 @@ import com.wisteria.projectwalk.models.Category;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
 import com.wisteria.projectwalk.views.LeaderboardChart;
-import com.wisteria.projectwalk.views.slider.SliderLayout;
 import com.wisteria.projectwalk.views.slider.YearSlider;
 
 /**
