@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
+import com.wisteria.projectwalk.models.Country;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
 import com.wisteria.projectwalk.views.CountryBar;
@@ -24,6 +25,7 @@ import com.wisteria.projectwalk.views.slider.YearSlider;
  * To be removed, this basic Activity is just to show the backend is working...
  */
 public class MainActivity extends Activity implements ManagerCallback {
+    private static final String TAG = "MainActivity";
 
     private Manager manager = Manager.getInstance();
     private YearSlider yearSlider;
@@ -48,35 +50,21 @@ public class MainActivity extends Activity implements ManagerCallback {
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
 
-        final Spinner spin = (Spinner)findViewById(R.id.spinner);
+        final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
 
-        LinearLayout CountryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
         countryBar = new CountryBar(context);
-        CountryBarLayout.addView(countryBar);
+        countryBarLayout.addView(countryBar);
 
-
-
-
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
                 try {
-                    String cname = spin.getSelectedItem().toString();
-
-                    if (cname != null){
-                        countryBar.refresh(cname);
-                        countryBar.invalidate();
-                    }
-
-                }catch (NullPointerException e){
+                    String cname = countrySpinner.getSelectedItem().toString();
+                    manager.setUsersCountry(new Country(cname));
+                } catch (NullPointerException e) {
 
                 }
-
-
-
-
             }
 
             @Override
@@ -123,6 +111,9 @@ public class MainActivity extends Activity implements ManagerCallback {
             @Override
             public void run() {
                 leaderboardChart.refresh();
+                Log.i(TAG, "Refresh and user's country is "+manager.getUsersCountry().getCountryName());
+                if (manager.getUsersCountry() != null)
+                    countryBar.refresh();
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
