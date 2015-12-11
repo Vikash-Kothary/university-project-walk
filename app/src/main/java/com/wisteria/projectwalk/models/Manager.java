@@ -63,13 +63,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     }
 
-<<<<<<< HEAD
     /**
      * Sets the current year selected by the user based on the position of the slider
      * @param currentYear The current year viewed by the user
      */
-=======
->>>>>>> develop
     public void setCurrentYear(int currentYear) {
         Log.i(TAG, "Setting current year to " + currentYear);
         this.currentYear = currentYear;
@@ -157,13 +154,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             managerCallback.dataIsReady(category, currentYear);
             return;
         }
-<<<<<<< HEAD
-        // TODO Prioritize this somehow
-        dataHandler.retrieveNewData(category, currentYear);
 
-=======
-        
->>>>>>> develop
         if (category == Category.Average) {
             calculateAverages();
         } else {

@@ -50,36 +50,13 @@ public class MainActivity extends Activity implements ManagerCallback {
         leaderboardContainerLayout.addView(leaderboardChart);
 
 
-        final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
-
-//        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
-//        countryBar = new CountryBar(context);
-//        countryBarLayout.addView(countryBar);
-
-        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    String cname = countrySpinner.getSelectedItem().toString();
-                    manager.setUsersCountry(new Country(cname));
-                } catch (NullPointerException e) {
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         Button button = (Button) findViewById(R.id.button_cloud);
         Button button2 = (Button) findViewById(R.id.button_fuel);
         Button button3 = (Button) findViewById(R.id.button_tree);
         Button button4 = (Button) findViewById(R.id.button_average);
 
-        //for the Fonts
-        TextView FontTextview = (TextView) findViewById(R.id.textView3);
+
         final TextView FontTrees = (TextView) findViewById(R.id.textView2);
         TextView FontEnviorment = (TextView) findViewById(R.id.textView);
 
@@ -95,7 +72,6 @@ public class MainActivity extends Activity implements ManagerCallback {
         button4.setTypeface(font);
 
         //Set the typeface for fonts
-        FontTextview.setTypeface(fontText);
         FontTrees.setTypeface(fontTree);
         FontEnviorment.setTypeface(fontEnvir);
 
