@@ -36,7 +36,7 @@ public class CustomScrollView extends HorizontalScrollView {
                     }
                 };
 
-                handler.postDelayed(currentRunnable, 30);
+                handler.postDelayed(currentRunnable, 40);
 
             }
         });

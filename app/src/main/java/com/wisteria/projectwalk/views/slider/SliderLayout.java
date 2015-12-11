@@ -72,13 +72,15 @@ public class SliderLayout extends CustomScrollView {
 
                 for (int i = 0; i < dashLayouts.length; i++) {
 
-                    int diff = Math.abs(scrollX - (int) (dashLayouts[i].getX() + dashLayouts[i].getWidth()/2) + rulerLayout.getPaddingLeft());
+                    int diff = Math.abs(scrollX - (int) (dashLayouts[i].getX()) + rulerLayout.getPaddingLeft());
 
                     if (diff < closestDiff) {
                         closestDiff = diff;
                         closestDashLayout = dashLayouts[i];
                     }
                 }
+
+                smoothScrollTo(- rulerLayout.getPaddingLeft() + (int) closestDashLayout.getX(), 0);
 
                 delegate.setCurrentYear(closestDashLayout.getYear());
 
