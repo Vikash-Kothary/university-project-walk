@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Spinner;
 
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
@@ -37,10 +35,8 @@ public class MainActivity extends Activity implements ManagerCallback {
 
         manager.setManagerCallback(this);
         //Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
         manager.setContext(this);
         manager.initManager();
-
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardChart = new LeaderboardChart(context);
@@ -54,7 +50,6 @@ public class MainActivity extends Activity implements ManagerCallback {
         TextView FontTextview = (TextView) findViewById(R.id.textView3);
         TextView FontTrees = (TextView) findViewById(R.id.textView2);
         TextView FontEnviorment = (TextView) findViewById(R.id.textView);
-
 
         Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Typeface fontText = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Light.ttf");
@@ -70,6 +65,9 @@ public class MainActivity extends Activity implements ManagerCallback {
         FontTextview.setTypeface(fontText);
         FontTrees.setTypeface(fontTree);
         FontEnviorment.setTypeface(fontEnvir);
+
+
+
 
         View.OnClickListener listner = new View.OnClickListener() {
             @Override
@@ -94,7 +92,7 @@ public class MainActivity extends Activity implements ManagerCallback {
 
     @Override
     public void dataIsReady(Category category, int year) {
-        Log.i("MainActivity", "data is ready for category "+category+", year "+year);
+        Log.i("MainActivity", "data is ready for category " + category + ", year " + year);
 
         this.runOnUiThread(new Runnable() {
             @Override
