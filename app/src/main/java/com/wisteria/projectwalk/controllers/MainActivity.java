@@ -77,6 +77,7 @@ public class MainActivity extends Activity implements ManagerCallback {
         Button button = (Button) findViewById(R.id.button_cloud);
         Button button2 = (Button) findViewById(R.id.button_fuel);
         Button button3 = (Button) findViewById(R.id.button_tree);
+        Button button4 = (Button) findViewById(R.id.button_average);
 
         //for the Fonts
         TextView FontTextview = (TextView) findViewById(R.id.textView3);
@@ -92,6 +93,7 @@ public class MainActivity extends Activity implements ManagerCallback {
         button.setTypeface(font);
         button2.setTypeface(font);
         button3.setTypeface(font);
+        button4.setTypeface(font);
 
         //Set the typeface for fonts
         FontTextview.setTypeface(fontText);
@@ -114,19 +116,17 @@ public class MainActivity extends Activity implements ManagerCallback {
                     case R.id.button_tree:
                         manager.setCategory(Category.FossilFuel);
                         break;
+                    case R.id.button_average:
+                        manager.setCategory(Category.Average);
+                        break;
                 }
             }
         };
 
         button.setOnClickListener(listener);
         button2.setOnClickListener(listener);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.calculateAverages();
-                Log.i(TAG, ""+ manager.getEntries(Category.Average, 2004));
-            }
-        });
+        button3.setOnClickListener(listener);
+        button4.setOnClickListener(listener);
     }
 
     @Override
