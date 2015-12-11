@@ -26,7 +26,6 @@ public class ApplicationTest {
         assertEquals("Gets at least one entry from the World Bank API", entries.size() == 0, false);
     }
 
-
     @Test
     public void test(){
         Manager manager = Manager.getInstance();
