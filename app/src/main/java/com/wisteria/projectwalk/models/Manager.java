@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -278,6 +279,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
                         b.add(entry);
                         averageEntries.put(year, b);
                     }
+
+                    ArrayList<Entry> arrayList = averageEntries.get(year);
+                    Collections.sort(arrayList, compareEntries);
+                    Collections.reverse(arrayList);
                 }
 
             }
@@ -287,11 +292,18 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
         Log.i(TAG, "Average entries should be "+averageEntries);
 
+
+
         dataHandler.getHashMap().put(Category.Average.type, averageEntries);
 
 
 
     }
 
+    Comparator<Entry> compareEntries = new Comparator<Entry>(){
+        public int compare(Entry entry1, Entry entry2) {
+            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
+        }
+    };
 
 }
