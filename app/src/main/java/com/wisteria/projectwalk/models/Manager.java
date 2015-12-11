@@ -6,12 +6,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -38,12 +38,12 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private DataHandler dataHandler;
     private Context context;
 
-    public void setContext(Context context){
+    public void setContext(Context context) {
 
         this.context = context;
     }
 
-    public void initManager(){
+    public void initManager() {
         dataHandler = new DataHandler(context);
         dataHandler.addObserver(this);
         dataHandler.retrieveNewData(category, currentYear, currentYear, AsyncTask.SERIAL_EXECUTOR);
@@ -61,7 +61,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     }
 
     public void setCurrentYear(int currentYear) {
-        Log.i(TAG, "Setting current year to "+currentYear);
+        Log.i(TAG, "Setting current year to " + currentYear);
         this.currentYear = currentYear;
         populateEntries(category, currentYear);
 
@@ -72,10 +72,20 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         populateEntries(category, currentYear);
     }
 
+    public ArrayList<Entry> getEntries(Category category, int year) {
+        HashMap<String, HashMap<Integer, ArrayList<Entry>>> categoryHashMap = (HashMap<String, HashMap<Integer, ArrayList<Entry>>>) dataHandler.getHashMap();
+        if (categoryHashMap == null)
+            return null;
+
+        HashMap<Integer, ArrayList<Entry>> yearHashMap = categoryHashMap.get(category.type);
+        if (yearHashMap == null)
+            return null;
+
+        return yearHashMap.get(year);
+    }
+
     public ArrayList<Entry> getEntries() {
-        HashMap<Integer, ArrayList<Entry>> hashMap;
-        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
-        return hashMap.get(currentYear);
+        return getEntries(category, currentYear);
     }
 
     public int colorForBar() {
@@ -90,14 +100,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return Color.BLACK;
     }
 
-    public ArrayList<Entry> getEntries(Category category, int currentYear) {
-        HashMap<Integer, ArrayList<Entry>> hashMap;
-        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
-        return hashMap.get(currentYear);
-    }
-
     /**
      * Returns the entry for the user's country
+     *
      * @return the entry
      */
     public Entry entryForUsersCountry() {
@@ -106,7 +111,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         if (entries == null)
             return null;
 
-        for (Entry entry: entries) {
+        for (Entry entry : entries) {
             if (entry.getCountry().equals(usersCountry))
                 return entry;
         }
@@ -116,7 +121,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     /**
      * Gathers all the entries for a particular categore and year
-     * @param category {Category}
+     *
+     * @param category    {Category}
      * @param currentYear {int}
      */
     public void populateEntries(Category category, int currentYear) {
@@ -163,7 +169,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void setUsersCountry(Country usersCountry) {
         this.usersCountry = usersCountry;
     }
-
 
 
 }
