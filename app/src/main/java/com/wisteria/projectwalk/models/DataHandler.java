@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
 
 public class DataHandler extends Observable {
 
-    HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
+    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> hashMap = new HashMap();
     private Context context;
 
     public String getIndicator(Category category, int minYear, int maxYear) {
