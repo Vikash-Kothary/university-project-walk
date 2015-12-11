@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Environment"
+            android:text="Environment Rank"
             android:textColor="#FFFFFF"
             android:id="@+id/textView"
             android:textSize="30dp"
@@ -131,19 +131,19 @@
     <LinearLayout
         android:id="@+id/leaderboard_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
         android:layout_marginTop="30dp">
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/CountryBar_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="vertical"
-        android:layout_marginTop="30dp">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/CountryBar_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_marginTop="30dp">-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </LinearLayout>
