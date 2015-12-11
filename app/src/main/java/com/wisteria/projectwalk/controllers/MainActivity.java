@@ -46,8 +46,10 @@ public class MainActivity extends Activity implements ManagerCallback {
         manager.initManager();
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+        leaderboardContainerLayout.removeAllViews();
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
+
 
         final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
 
@@ -109,7 +111,6 @@ public class MainActivity extends Activity implements ManagerCallback {
                     case R.id.button_fuel:
                         manager.setCategory(Category.ForestArea);
                         break;
-
                     case R.id.button_tree:
                         manager.setCategory(Category.FossilFuel);
                         break;
