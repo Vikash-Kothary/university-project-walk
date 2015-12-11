@@ -132,8 +132,13 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             return;
         }
 
-        // TODO Prioritize this somehow
-        dataHandler.retrieveNewData(category, currentYear);
+        if (category == Category.Average) {
+            calculateAverages();
+        } else {
+            // TODO Prioritize this somehow
+            dataHandler.retrieveNewData(category, currentYear);
+        }
+
     }
 
     public void setManagerCallback(ManagerCallback managerCallback) {
@@ -168,6 +173,16 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     public void setUsersCountry(Country usersCountry) {
         this.usersCountry = usersCountry;
+    }
+
+    public void calculateAverages() {
+        HashMap<Integer, ArrayList<Entry>> forestEntries, co2Entries, fossilFuelEntries;
+        forestEntries = dataHandler.getHashMap().get(Category.ForestArea);
+
+        // Todo make new averages for averages
+
+        ArrayList<Entry> averageEntries;
+        dataHandler.getHashMap().put(Category.Average.type, averageEntries);
     }
 
 

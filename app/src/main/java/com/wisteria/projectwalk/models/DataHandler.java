@@ -65,7 +65,7 @@ public class DataHandler extends Observable {
 
     }
 
-    public HashMap getHashMap (){
+    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> getHashMap (){
         return hashMap;
     }
 
