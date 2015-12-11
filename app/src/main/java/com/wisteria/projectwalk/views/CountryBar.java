@@ -72,5 +72,7 @@ public class CountryBar extends HorizontalBarChart {
         BarData data = new BarData(labels, dataset);
         setData(data);
 
+
+
     }
 }
