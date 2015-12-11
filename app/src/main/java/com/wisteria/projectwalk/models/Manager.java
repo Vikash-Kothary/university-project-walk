@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -132,8 +133,13 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             return;
         }
 
-        // TODO Prioritize this somehow
-        dataHandler.retrieveNewData(category, currentYear);
+        if (category == Category.Average) {
+            calculateAverages();
+        } else {
+            // TODO Prioritize this somehow
+            dataHandler.retrieveNewData(category, currentYear);
+        }
+
     }
 
     public void setManagerCallback(ManagerCallback managerCallback) {
@@ -168,6 +174,123 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     public void setUsersCountry(Country usersCountry) {
         this.usersCountry = usersCountry;
+    }
+
+    public void calculateAverages() {
+        ArrayList<HashMap<Integer, ArrayList<Entry>>> hashMaps = new ArrayList<HashMap<Integer, ArrayList<Entry>>>();
+
+
+        hashMaps.add(dataHandler.getHashMap().get(Category.ForestArea.type));
+        hashMaps.add(dataHandler.getHashMap().get(Category.C02Emissions.type));
+        hashMaps.add(dataHandler.getHashMap().get(Category.FossilFuel.type));
+
+        Log.i(TAG, "Datahashmap: " + dataHandler.getHashMap());
+        Log.i(TAG, "HashMaps: "+hashMaps);
+
+        HashMap<Country, ArrayList<Entry>> entriesForCountry = new HashMap<>();
+
+
+        for (int i = 0; i < hashMaps.size(); i++) {
+
+            if (hashMaps.get(i) == null)
+                continue;
+
+            Collection<ArrayList<Entry>> allEntries = hashMaps.get(i).values();
+            for (ArrayList<Entry> entries :
+                    allEntries) {
+                for (Entry entry :
+                        entries) {
+                    ArrayList<Entry> a = entriesForCountry.get(entry.getCountry());
+                    if (a != null) {
+                        a.add(entry);
+                    } else {
+                        ArrayList<Entry> b = new ArrayList<>();
+                        b.add(entry);
+                        entriesForCountry.put(entry.getCountry(), b);
+                    }
+                }
+            }
+        }
+
+
+        Log.i(TAG, "entriesForCountry: "+entriesForCountry);
+
+
+        HashMap<Integer, ArrayList<Entry>> averageEntries = new HashMap<>();
+
+        for (Map.Entry<Country, ArrayList<Entry>> entriesMap :
+                entriesForCountry.entrySet()) {
+            Country country = entriesMap.getKey();
+            // all the entries for this country
+            ArrayList<Entry> entries = entriesMap.getValue();
+
+
+            Log.i(TAG, "random entries: "+entries);
+
+            // Create a hashmap to categorize by year
+            HashMap<Integer, ArrayList<Entry>> entriesByYear = new HashMap<>();
+
+            // loop through all the entries
+            for (Entry entry:
+                 entries) {
+
+                // Gets a reference for the arraylist at a year
+                ArrayList<Entry> entriesForYear = entriesByYear.get(entry.getYear());
+                if (entriesForYear != null) {
+                    entriesForYear.add(entry);
+                } else {
+                    ArrayList<Entry> b = new ArrayList<>();
+                    b.add(entry);
+                    entriesByYear.put(entry.getYear(), b);
+                }
+            }
+
+
+            Log.i(TAG, "entriesByYear: "+entriesByYear);
+
+            for (Map.Entry<Integer, ArrayList<Entry>> entrySet : entriesByYear.entrySet()) {
+
+                int year = entrySet.getKey();
+                ArrayList<Entry> entriesForThisSpecificYear = entrySet.getValue();
+                double value = 0;
+                int n = 0;
+
+
+                Log.i(TAG, "entriesForThisSpecificYear"+entriesForThisSpecificYear);
+
+                for (Entry entry: entriesForThisSpecificYear) {
+                    value += entry.getPercentage();
+                    n++;
+                }
+
+                if (n != 0) {
+                    double average = value / n;
+
+                    Entry entry = new Entry(year, country, average);
+
+                    Log.i(TAG, "New fresh Entry: "+entry);
+
+                    ArrayList<Entry> averageEntriesAlreadyThere = averageEntries.get(year);
+                    if (averageEntriesAlreadyThere != null) {
+                        averageEntriesAlreadyThere.add(entry);
+                    } else {
+                        ArrayList<Entry> b = new ArrayList<>();
+                        b.add(entry);
+                        averageEntries.put(year, b);
+                    }
+                }
+
+            }
+        }
+
+        // Todo make new averages for averages
+
+        Log.i(TAG, "Average entries should be "+averageEntries);
+
+        dataHandler.getHashMap().put(Category.Average.type, averageEntries);
+
+
+
     }
 
 

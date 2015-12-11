@@ -79,6 +79,18 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="4dp" />
 
+
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/button_average"
+                android:textSize="35sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/average"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="4dp" />
+
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -102,7 +114,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal"
-        android:text="Number of tress in each country"
+        android:text="Forest Area"
         android:textSize="20dp"
         android:layout_marginTop="10dp" />
 
