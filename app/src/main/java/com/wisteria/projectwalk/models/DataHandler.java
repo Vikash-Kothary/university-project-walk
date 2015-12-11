@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -38,7 +39,6 @@ public class DataHandler extends Observable {
 
     /** Total number of AsyncTasks running in parallel */
     int AsyncCounter = 0;
-
     /**
      *  Loops through all indicators, creates a separate AsyncTask for each one
      *  Executes the AsyncTask using a Thread Pool (parallel)
@@ -53,8 +53,9 @@ public class DataHandler extends Observable {
 
     }
 
-    public void retrieveNewData(Category category, int minYear, int maxYear, Executor executor) {
 
+    public void retrieveNewData(Category category, int minYear, int maxYear, Executor executor) {
+        this.category = category;
         new RetrieveData(category, minYear, maxYear, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
@@ -69,10 +70,14 @@ public class DataHandler extends Observable {
         return hashMap;
     }
 
+    String data;
+    Category category;
     protected void dataLoaded(){
         setChanged();
         notifyObservers();
+
     }
+
     /**
      * Requests data using the provided indicators
      */
@@ -86,7 +91,7 @@ public class DataHandler extends Observable {
         private int maxYear;
 
         public RetrieveData(Category category, int minYear, int maxYear, Context context){
-            Log.i("RetrieveData", "Retrieving data for "+category+", "+minYear+", "+maxYear);
+            Log.i("RetrieveData", "Retrieving data for "+ category +", "+minYear+", "+maxYear);
             this.context = context;
             this.dataIndicator = getIndicator(category, minYear, maxYear);
             this.category = category;
@@ -97,56 +102,61 @@ public class DataHandler extends Observable {
         @Override
         protected Void doInBackground(Object... params) {
 
+
+            StringBuilder collectedData = new StringBuilder();
+            StringBuilder cacheBuilder = new StringBuilder();
+
+            File cacheFile = new File(context.getCacheDir(), category.type);
+            if(cacheFile.exists()) {
+
+                Log.wtf("YES", "DATA FOUND IN CACHE");
+
+                try {
+                    BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile)));
+                    String line;
+                    while ((line = input.readLine()) != null) {
+                        cacheBuilder.append(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                String data[] = cacheBuilder.toString().split(",");
+
+                Boolean dataLoaded = false;
+            
+
+                if (dataLoaded) {
+                    return null;
+                }
+            }
+
+            StringBuilder internetBuilder = new StringBuilder();
+
             for(int y = minYear; y <maxYear+1; y++) {
+
 
                 String dataCollected = "";
 
-                BufferedReader input;
-                File file;
-
                 try {
 
-                    file = new File(context.getCacheDir(), category.type + y);
+                    BufferedReader br;
+                    URL url;
+                    String line;
+                    String newURL = "http://api.worldbank.org/countries" + dataIndicator;
+                    url = new URL(newURL);
+                    URLConnection connection = url.openConnection();
 
-                    if (file.exists()) {
+                    br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                        input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-                        String line;
-                        StringBuilder cacheBuilder = new StringBuilder();
-                        while ((line = input.readLine()) != null) {
-                            cacheBuilder.append(line);
-                        }
-
-                        dataCollected = cacheBuilder.toString();
-
-                    } else {
-
-                        BufferedReader br;
-                        URL url;
-                        String line;
-                        String newURL = "http://api.worldbank.org/countries" + dataIndicator;
-
-                        url = new URL(newURL);
-                        URLConnection connection = url.openConnection();
-
-                        br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                        StringBuilder internetBuilder = new StringBuilder();
-                        while ((line = br.readLine()) != null) {
-                            internetBuilder.append(line);
-                            dataCollected = internetBuilder.toString();
-                            File infile;
-                            FileOutputStream outputStream;
-                            infile = new File(context.getCacheDir(), category.type + y);
-                            outputStream = new FileOutputStream(infile);
-                            outputStream.write(line.getBytes());
-                            outputStream.close();
-                        }
-
+                    while ((line = br.readLine()) != null) {
+                        internetBuilder.append(line);
                     }
 
-                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
+                    dataCollected = internetBuilder.toString();
 
+                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
                     JSONArray jsonArray = new JSONArray(dataCollected);
                     JSONArray insideJSON = jsonArray.getJSONArray(1);
 
@@ -162,7 +172,7 @@ public class DataHandler extends Observable {
 
                             for (String iso : allISOs) {
 
-                                if (iso.equals(countryISO)) {
+                                if (iso.equals(countryISO) && !country.contains(".") && !country.contains(" ")) {
 
                                     if (!insideHashMap.containsKey(date)) {
                                         insideHashMap.put(date, new ArrayList<Entry>());
@@ -170,6 +180,9 @@ public class DataHandler extends Observable {
 
                                     ArrayList<Entry> entries = (ArrayList) insideHashMap.get(date);
                                     entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
+                                    collectedData.append(date+",");
+                                    collectedData.append(country+",");
+                                    collectedData.append(value + ",");
                                     break;
                                 }
                             }
@@ -192,11 +205,21 @@ public class DataHandler extends Observable {
                     }
 
                     hashMap.put(category.type, insideHashMap);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
 
+            File file = new File(context.getCacheDir(), category.type);
+            FileOutputStream outputStream;
+
+            try{
+            outputStream = new FileOutputStream(file);
+            outputStream.write(collectedData.toString().getBytes());
+
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             AsyncCounter++;
@@ -215,5 +238,7 @@ public class DataHandler extends Observable {
             dataLoaded();
         }
     }
+
+
 
 }

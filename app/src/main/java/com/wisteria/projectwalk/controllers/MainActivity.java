@@ -111,7 +111,7 @@ public class MainActivity extends Activity implements ManagerCallback {
             @Override
             public void run() {
                 leaderboardChart.refresh();
-                Log.i(TAG, "Refresh and user's country is "+manager.getUsersCountry().getCountryName());
+              //  Log.i(TAG, "Refresh and user's country is "+manager.getUsersCountry().getCountryName());
                 if (manager.getUsersCountry() != null)
                     countryBar.refresh();
 

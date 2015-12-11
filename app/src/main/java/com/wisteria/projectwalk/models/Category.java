@@ -1,8 +1,5 @@
 package com.wisteria.projectwalk.models;
 
-/**
- * Created by uni on 06/12/2015.
- */
 
     public enum Category{
 
@@ -13,7 +10,6 @@ package com.wisteria.projectwalk.models;
         Category (String type){
             this.type = type;
         }
-
 
     }
 
