@@ -16,12 +16,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * The manager
+ * The manager,this singleton class helps establish a connection between the front and backend.
  */
-
 public class Manager implements LeaderboardDataSource, Observer, YearSliderDelegate, YearSliderDataSource {
-    final private String TAG = "Manager";
 
+    final private String TAG = "Manager";
     private static Manager sharedInstance = new Manager();
     private ManagerCallback managerCallback;
 
@@ -38,11 +37,18 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private DataHandler dataHandler;
     private Context context;
 
+    /**
+     *
+     * @param context The Activity from the MainActivity
+     */
     public void setContext(Context context) {
 
         this.context = context;
     }
 
+    /**
+     * Initializes the backend, begins retriving data, sets this as an observer to an instance of DataHandler
+     */
     public void initManager() {
         dataHandler = new DataHandler(context);
         dataHandler.addObserver(this);
@@ -56,10 +62,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         }
     }
 
-    public int getCurrentYear() {
-        return currentYear;
-    }
-
+    /**
+     * Sets the current year selected by the user based on the position of the slider
+     * @param currentYear The current year viewed by the user
+     */
     public void setCurrentYear(int currentYear) {
         Log.i(TAG, "Setting current year to " + currentYear);
         this.currentYear = currentYear;
@@ -67,11 +73,21 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     }
 
+    /**
+     *  Sets a category to be used when retriving sets of data.
+     * @param category The Category (type of data) to be viewed by the user
+     */
     public void setCategory(Category category) {
         this.category = category;
         populateEntries(category, currentYear);
     }
 
+    /**
+     * Gets an ArrayList of Entry objects based on the Category and year passed
+     * @param category The category of the data
+     * @param year The year to be retrieved
+     * @return An ArrayList of Entry objects
+     */
     public ArrayList<Entry> getEntries(Category category, int year) {
         HashMap<String, HashMap<Integer, ArrayList<Entry>>> categoryHashMap = (HashMap<String, HashMap<Integer, ArrayList<Entry>>>) dataHandler.getHashMap();
         if (categoryHashMap == null)
@@ -84,10 +100,16 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return yearHashMap.get(year);
     }
 
+
     public ArrayList<Entry> getEntries() {
         return getEntries(category, currentYear);
     }
 
+
+    /**
+     *  Gets the colour of the bar chart based on the current Category
+     * @return An in for the Color of the bar chart
+     */
     public int colorForBar() {
         switch (category) {
             case ForestArea:
@@ -102,7 +124,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     /**
      * Returns the entry for the user's country
-     *
      * @return the entry
      */
     public Entry entryForUsersCountry() {
@@ -121,7 +142,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     /**
      * Gathers all the entries for a particular categore and year
-     *
      * @param category    {Category}
      * @param currentYear {int}
      */
@@ -131,7 +151,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
             managerCallback.dataIsReady(category, currentYear);
             return;
         }
-
         // TODO Prioritize this somehow
         dataHandler.retrieveNewData(category, currentYear);
     }
@@ -148,6 +167,10 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     }
 
+    /**
+     *  Gets an ArrayList with all avaliable years
+     * @return An ArrayList containing all possible years of each of the 3 Indicators used
+     */
     public ArrayList<Integer> getAvailableYears() {
 
         List<Integer>[] years = new List[]{
@@ -162,10 +185,17 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         return yearsList;
     }
 
+    /**
+     * @return The Country of the user
+     */
     public Country getUsersCountry() {
         return usersCountry;
     }
 
+    /**
+     * Sets the Country of the user
+     * @param usersCountry The Country
+     */
     public void setUsersCountry(Country usersCountry) {
         this.usersCountry = usersCountry;
     }

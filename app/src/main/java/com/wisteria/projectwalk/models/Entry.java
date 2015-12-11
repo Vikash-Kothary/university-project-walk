@@ -18,12 +18,15 @@ public class Entry {
     private int year;
     private Country country;
     private double percentage;
-    private double diffPercentage;
 
+    /**
+     * @return A temporary value representing the data for that particular date and country
+     */
     public double getTempPercentage() {
         return tempPercentage;
     }
 
+    /** A value used to hold a temporary Double value */
     private double tempPercentage;
 
     public void setTempPercentage(){
@@ -35,30 +38,34 @@ public class Entry {
         this.year = year;
         this.country = country;
         this.percentage = percentage;
-        this.diffPercentage = diffPercentage;
     }
 
-
+    /**
+     * Sets the country for this Entry
+     * @param country The Country Object representing this country
+     */
     public void setCountry(Country country) {
         this.country = country;
     }
 
+    /**
+     * @return the value for this entry
+     */
     public double getPercentage() {
         return percentage;
     }
 
+    /**
+     * @param percentage sets the percentage
+     */
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
 
-    public double getDiffPercentage() {
-        return diffPercentage;
-    }
 
-    public void setDiffPercentage(double diffPercentage) {
-        this.diffPercentage = diffPercentage;
-    }
-
+    /**
+     * @return Gets the Country of this Entry
+     */
     public Country getCountry(){
         return country;
     }

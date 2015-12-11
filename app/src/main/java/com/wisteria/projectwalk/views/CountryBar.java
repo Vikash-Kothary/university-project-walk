@@ -53,6 +53,7 @@ public class CountryBar extends HorizontalBarChart {
 
     }
 
+
     public void refresh() {
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
