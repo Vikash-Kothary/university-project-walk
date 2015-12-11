@@ -125,7 +125,7 @@ public class DataHandler extends Observable {
                 String data[] = cacheBuilder.toString().split(",");
 
                 Boolean dataLoaded = false;
-            
+
 
                 if (dataLoaded) {
                     return null;

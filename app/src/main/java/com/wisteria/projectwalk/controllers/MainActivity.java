@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.wisteria.projectwalk.R;
@@ -41,20 +42,20 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
         manager.setManagerCallback(this);
-
         manager.setContext(this);
         manager.initManager();
 
-
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+        leaderboardContainerLayout.removeAllViews();
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
 
+
         final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
 
-        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
-        countryBar = new CountryBar(context);
-        countryBarLayout.addView(countryBar);
+//        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+//        countryBar = new CountryBar(context);
+//        countryBarLayout.addView(countryBar);
 
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -77,14 +78,30 @@ public class MainActivity extends Activity implements ManagerCallback {
         Button button2 = (Button) findViewById(R.id.button_fuel);
         Button button3 = (Button) findViewById(R.id.button_tree);
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        //for the Fonts
+        TextView FontTextview = (TextView) findViewById(R.id.textView3);
+        TextView FontTrees = (TextView) findViewById(R.id.textView2);
+        TextView FontEnviorment = (TextView) findViewById(R.id.textView);
 
-        //Set the typeface
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        Typeface fontText = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Light.ttf");
+        Typeface fontTree = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Bold.ttf");
+        Typeface fontEnvir = Typeface.createFromAsset(getAssets(),"fonts/OpenSans-Regular.ttf");
+
+        //Set the typeface for Buttons
         button.setTypeface(font);
         button2.setTypeface(font);
         button3.setTypeface(font);
 
-        View.OnClickListener listner = new View.OnClickListener() {
+        //Set the typeface for fonts
+        FontTextview.setTypeface(fontText);
+        FontTrees.setTypeface(fontTree);
+        FontEnviorment.setTypeface(fontEnvir);
+
+
+
+
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -94,26 +111,35 @@ public class MainActivity extends Activity implements ManagerCallback {
                     case R.id.button_fuel:
                         manager.setCategory(Category.ForestArea);
                         break;
-
                     case R.id.button_tree:
                         manager.setCategory(Category.FossilFuel);
                         break;
                 }
             }
         };
+
+        button.setOnClickListener(listener);
+        button2.setOnClickListener(listener);
+        button3.setOnClickListener(listener);
     }
 
     @Override
     public void dataIsReady(Category category, int year) {
-        Log.i("MainActivity", "data is ready for category "+category+", year "+year);
+        Log.i("MainActivity", "data is ready for category " + category + ", year " + year);
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 leaderboardChart.refresh();
+<<<<<<< HEAD
               //  Log.i(TAG, "Refresh and user's country is "+manager.getUsersCountry().getCountryName());
                 if (manager.getUsersCountry() != null)
                     countryBar.refresh();
+=======
+                Log.i(TAG, "Refresh and user's country is " + manager.getUsersCountry().getCountryName());
+//                if (manager.getUsersCountry() != null)
+//                    countryBar.refresh();
+>>>>>>> develop
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);

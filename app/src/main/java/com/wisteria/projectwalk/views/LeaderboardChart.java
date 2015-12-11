@@ -22,9 +22,7 @@ import java.util.ArrayList;
  */
 public class LeaderboardChart extends HorizontalBarChart {
     private LeaderboardDataSource dataSource = Manager.getInstance();
-    private String filterString="";
-
-
+    private String filterString = "";
 
     public LeaderboardChart(Context context) {
         super(context);
@@ -38,12 +36,9 @@ public class LeaderboardChart extends HorizontalBarChart {
         setDragEnabled(true);
         setPinchZoom(false);
         setDoubleTapToZoomEnabled(false);
-        setVisibleXRangeMinimum(2);
+//        setVisibleXRangeMinimum(2);
 
-
-
-
-        zoom(30, 30, 1, 1);
+        zoom(1, 10, 0, 0);
         setDrawGridBackground(false);
 
         getXAxis().setDrawGridLines(false);
@@ -61,42 +56,28 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<BarEntry> pastEntries = new ArrayList<>();
 
         for (int i = 0; i < dataEntries.size(); i++){
 
                 entries.add(new BarEntry((int)dataEntries.get(i).getPercentage(), i));
                 labels.add(dataEntries.get(i).getCountry().getCountryName());
 
+
         }
 
 
-        BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
+        // TODO: change tilte of data set
+        BarDataSet currentDataSet = new BarDataSet(entries, "Percentage Change of data");
 
-        dataset.setBarSpacePercent(0f);
-        dataset.setValueTextSize(20f);
-        dataset.setColor(dataSource.colorForBar());
+        currentDataSet.setBarSpacePercent(0f);
+        currentDataSet.setValueTextSize(20f);
+        currentDataSet.setColor(dataSource.colorForBar());
 
-        BarData data = new BarData(labels, dataset);
+        BarData data = new BarData(labels, currentDataSet);
         setData(data);
 
 
         invalidate();
-    }
-
-
-
-
-    public void changeColor(Color color) {
-
-
-
-    }
-
-
-
-    public void filterData(String s) {
-        System.out.println(s);
-        filterString = s;
-        refresh();
     }
 }
