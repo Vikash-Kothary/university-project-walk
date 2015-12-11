@@ -1,6 +1,7 @@
 package com.wisteria.projectwalk.models;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,11 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -25,8 +23,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     final private String TAG = "Manager";
 
     private static Manager sharedInstance = new Manager();
-    HashMap<String,HashMap<Integer,ArrayList<Entry>>> allEntries;
-
     private ManagerCallback managerCallback;
 
     public static Manager getInstance() {
@@ -36,20 +32,19 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     private int currentYear = 2004;
     private int minYear = 1960;
     private int maxYear = 2015;
+    private Category category = Category.ForestArea;
     private Country usersCountry;
 
     private DataHandler dataHandler;
+    private Context context;
 
-    private Category category = Category.ForestArea;
-
-    Context activity;
     public void setContext(Context context){
 
-        activity = context;
+        this.context = context;
     }
 
     public void initManager(){
-        dataHandler = new DataHandler(activity);
+        dataHandler = new DataHandler(context);
         dataHandler.addObserver(this);
         dataHandler.retrieveNewData(category, currentYear, currentYear, AsyncTask.SERIAL_EXECUTOR);
 
@@ -77,39 +72,42 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         populateEntries(category, currentYear);
     }
 
-    /**
-     * Returns the entry at a ranking
-     * @param ranking (int)
-     * @return the entry
-     */
-    public Entry entryForRanking(int ranking) {
-
-        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
-
-//        if (entries != null) {
-            return entries.get(ranking - 1);
-//        }
-//        return null;
-
-    }
-
     public ArrayList<Entry> getEntries() {
-        return allEntries.get(category.type).get(currentYear);
+        HashMap<Integer, ArrayList<Entry>> hashMap;
+        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
+        return hashMap.get(currentYear);
+    }
+
+    public int colorForBar() {
+        switch (category) {
+            case ForestArea:
+                return Color.parseColor("#50E399");
+            case C02Emissions:
+                return Color.parseColor("#CFCFCF");
+            case FossilFuel:
+                return Color.parseColor("#FFB446");
+        }
+        return Color.BLACK;
+    }
+
+    public ArrayList<Entry> getEntries(Category category, int currentYear) {
+        HashMap<Integer, ArrayList<Entry>> hashMap;
+        hashMap = (HashMap<Integer, ArrayList<Entry>>) dataHandler.getHashMap().get(category.type);
+        return hashMap.get(currentYear);
     }
 
     /**
-     * Returns the entry for a country
-     * @param country (Country)
+     * Returns the entry for the user's country
      * @return the entry
      */
-    public Entry entryForCountry(Country country) {
-        ArrayList<Entry> entries = allEntries.get(category.type).get(currentYear);
+    public Entry entryForUsersCountry() {
+        ArrayList<Entry> entries = getEntries();
 
         if (entries == null)
             return null;
 
         for (Entry entry: entries) {
-            if (entry.getCountry().equals(country))
+            if (entry.getCountry().equals(usersCountry))
                 return entry;
         }
 
@@ -123,7 +121,7 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
      */
     public void populateEntries(Category category, int currentYear) {
         // check if entries are  present in hashmap for this category and year
-        if (allEntries.get(category.type).get(currentYear) != null) {
+        if (getEntries(category, currentYear) != null) {
             managerCallback.dataIsReady(category, currentYear);
             return;
         }
@@ -136,41 +134,13 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         this.managerCallback = managerCallback;
     }
 
-    DataHandler handler;
     @Override
     public void update(Observable observable, Object data) {
         Log.i("Manager", "update");
 
-        handler = (DataHandler) observable;
-
-        allEntries = (HashMap) handler.getHashMap().clone();
-
-        ArrayList<Entry> entries = (ArrayList) allEntries.get(category.type).get(currentYear);
-
-        Collections.sort(entries,compareEntries);
-        Collections.reverse(entries);
-
-        if(entries.get(0).getPercentage() > 100) {
-
-            for (Entry entry : entries) {
-                entry.setTempPercentage();
-                entry.setPercentage(entry.getTempPercentage() / entries.get(0).getTempPercentage() * 100);
-            }
-
-        }
-
-        Log.i("Total number ", "" + allEntries.size());
-
         managerCallback.dataIsReady(category, currentYear);
 
     }
-
-    Comparator<Entry> compareEntries = new Comparator<Entry>(){
-
-        public int compare(Entry entry1, Entry entry2) {
-            return Double.compare(entry1.getPercentage(), entry2.getPercentage());
-        }
-    };
 
     public ArrayList<Integer> getAvailableYears() {
 
@@ -180,11 +150,20 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
                 Arrays.asList(1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012)
         };
 
-        return new ArrayList<>(years[category.ordinal()]);
+        ArrayList<Integer> yearsList = new ArrayList<>(years[category.ordinal()]);
+        Collections.sort(yearsList);
+
+        return yearsList;
     }
 
-    public Category getCategory() {
-        return category;
+    public Country getUsersCountry() {
+        return usersCountry;
     }
+
+    public void setUsersCountry(Country usersCountry) {
+        this.usersCountry = usersCountry;
+    }
+
+
 
 }

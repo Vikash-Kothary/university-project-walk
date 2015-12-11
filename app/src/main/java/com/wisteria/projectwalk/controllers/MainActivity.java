@@ -6,26 +6,34 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.wisteria.projectwalk.R;
 import com.wisteria.projectwalk.models.Category;
+import com.wisteria.projectwalk.models.Country;
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
+import com.wisteria.projectwalk.views.CountryBar;
 import com.wisteria.projectwalk.views.LeaderboardChart;
-import com.wisteria.projectwalk.views.YearSlider;
+import com.wisteria.projectwalk.views.slider.YearSlider;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
  */
 public class MainActivity extends Activity implements ManagerCallback {
+    private static final String TAG = "MainActivity";
 
     private Manager manager = Manager.getInstance();
     private YearSlider yearSlider;
     private Context context = this;
     private LeaderboardChart leaderboardChart;
+    private CountryBar countryBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +42,35 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
         manager.setManagerCallback(this);
-        //Spinner spinner = (Spinner) findViewById(R.id.spinner);
         manager.setContext(this);
         manager.initManager();
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
+
+        final Spinner countrySpinner = (Spinner)findViewById(R.id.spinner);
+
+        LinearLayout countryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+        countryBar = new CountryBar(context);
+        countryBarLayout.addView(countryBar);
+
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    String cname = countrySpinner.getSelectedItem().toString();
+                    manager.setUsersCountry(new Country(cname));
+                } catch (NullPointerException e) {
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Button button = (Button) findViewById(R.id.button_cloud);
         Button button2 = (Button) findViewById(R.id.button_fuel);
@@ -84,10 +114,8 @@ public class MainActivity extends Activity implements ManagerCallback {
                         manager.setCategory(Category.FossilFuel);
                         break;
                 }
-                //manager.setCategory(Category.);
             }
         };
-        //button.setOnClickListener(listner);
     }
 
     @Override
@@ -98,6 +126,9 @@ public class MainActivity extends Activity implements ManagerCallback {
             @Override
             public void run() {
                 leaderboardChart.refresh();
+                Log.i(TAG, "Refresh and user's country is " + manager.getUsersCountry().getCountryName());
+                if (manager.getUsersCountry() != null)
+                    countryBar.refresh();
 
                 if (yearSlider == null) {
                     LinearLayout yearSliderContainer = (LinearLayout) findViewById(R.id.year_slider_container);
