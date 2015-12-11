@@ -178,10 +178,15 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
     public void calculateAverages() {
         HashMap<Integer, ArrayList<Entry>> forestEntries, co2Entries, fossilFuelEntries;
         forestEntries = dataHandler.getHashMap().get(Category.ForestArea);
+        co2Entries = dataHandler.getHashMap().get(Category.C02Emissions);
+        fossilFuelEntries = dataHandler.getHashMap().get(Category.FossilFuel);
+
+        forestEntries.get(2014);
 
         // Todo make new averages for averages
 
-        ArrayList<Entry> averageEntries;
+        
+        HashMap<Integer, ArrayList<Entry>> averageEntries;
         dataHandler.getHashMap().put(Category.Average.type, averageEntries);
     }
 
