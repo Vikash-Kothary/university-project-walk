@@ -2,6 +2,7 @@ package com.wisteria.projectwalk.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -54,9 +55,16 @@ public class LeaderboardChart extends HorizontalBarChart {
     public void refresh() {
         ArrayList<Entry> dataEntries = dataSource.getEntries();
 
+        Log.i("", "refresh"+dataEntries);
+
+        if (dataEntries == null)
+            return;
+
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
         ArrayList<BarEntry> pastEntries = new ArrayList<>();
+
+
 
         for (int i = 0; i < dataEntries.size(); i++){
 

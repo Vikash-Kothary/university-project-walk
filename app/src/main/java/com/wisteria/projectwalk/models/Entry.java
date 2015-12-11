@@ -11,6 +11,10 @@ import java.util.ArrayList;
  */
 public class Entry {
 
+    public int getYear() {
+        return year;
+    }
+
     private int year;
     private Country country;
     private double percentage;

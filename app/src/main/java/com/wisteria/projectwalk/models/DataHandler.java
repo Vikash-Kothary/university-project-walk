@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -78,6 +79,10 @@ public class DataHandler extends Observable {
 
     }
 
+    public void retriveFromCache() {
+
+    }
+
     /**
      * Requests data using the provided indicators
      */
@@ -102,6 +107,58 @@ public class DataHandler extends Observable {
         @Override
         protected Void doInBackground(Object... params) {
 
+            int minFound = 10000;
+            int maxFound = 0;
+
+            String line = null;
+            try {
+
+                File cacheFile = new File(context.getCacheDir(), category.type);
+                if(cacheFile.exists()) {
+                    FileReader fileReader = new FileReader(cacheFile);
+
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+                    Log.i("", "THESE ARE IN THE CACHE");
+
+
+                    HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
+                    while ((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+
+                        String[] arr = line.split(",");
+
+                        Entry entry = new Entry(Integer.parseInt(arr[0]), new Country(arr[1]), Double.parseDouble(arr[2]));
+
+
+                        ArrayList<Entry> entries = insideHashMap.get(entry.getYear());
+                        if (entries != null) {
+                            entries.add(entry);
+                        } else {
+                            ArrayList<Entry> newList = new ArrayList<>();
+                            newList.add(entry);
+                            insideHashMap.put(entry.getYear(), newList);
+                        }
+
+                        minFound = Math.min(entry.getYear(), minFound);
+                        maxFound = Math.max(entry.getYear(), maxFound);
+
+
+                        hashMap.put(category.type, insideHashMap);
+
+                    }
+
+                    bufferedReader.close();
+                }
+            } catch (Exception e) {
+
+            }
+
+            if (minFound <= minYear && maxFound >= maxYear)
+                return null;
+
+
+
 
             StringBuilder collectedData = new StringBuilder();
             StringBuilder cacheBuilder = new StringBuilder();
@@ -109,11 +166,10 @@ public class DataHandler extends Observable {
             File cacheFile = new File(context.getCacheDir(), category.type);
             if(cacheFile.exists()) {
 
-                Log.wtf("YES", "DATA FOUND IN CACHE");
 
                 try {
                     BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile)));
-                    String line;
+
                     while ((line = input.readLine()) != null) {
                         cacheBuilder.append(line);
                     }
@@ -134,16 +190,12 @@ public class DataHandler extends Observable {
 
             StringBuilder internetBuilder = new StringBuilder();
 
-            for(int y = minYear; y <maxYear+1; y++) {
-
-
                 String dataCollected = "";
 
                 try {
 
                     BufferedReader br;
                     URL url;
-                    String line;
                     String newURL = "http://api.worldbank.org/countries" + dataIndicator;
                     url = new URL(newURL);
                     URLConnection connection = url.openConnection();
@@ -155,6 +207,8 @@ public class DataHandler extends Observable {
                     }
 
                     dataCollected = internetBuilder.toString();
+
+                    Log.i("", "dataCollected" + dataCollected);
 
                     HashMap<Integer, ArrayList<Entry>> insideHashMap = new HashMap<>();
                     JSONArray jsonArray = new JSONArray(dataCollected);
@@ -182,7 +236,7 @@ public class DataHandler extends Observable {
                                     entries.add(new Entry(date, new Country(country), Double.parseDouble(value)));
                                     collectedData.append(date+",");
                                     collectedData.append(country+",");
-                                    collectedData.append(value + ",");
+                                    collectedData.append(value + "\n");
                                     break;
                                 }
                             }
@@ -205,19 +259,21 @@ public class DataHandler extends Observable {
                     }
 
                     hashMap.put(category.type, insideHashMap);
+                    Log.i("", "hashMap" + hashMap);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
 
             File file = new File(context.getCacheDir(), category.type);
             FileOutputStream outputStream;
 
             try{
-            outputStream = new FileOutputStream(file);
-            outputStream.write(collectedData.toString().getBytes());
 
+                outputStream = new FileOutputStream(file);
+                Log.i("DATAHANDLER", "collectedData" + collectedData.toString());
+                outputStream.write(collectedData.toString().getBytes());
                 outputStream.close();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
