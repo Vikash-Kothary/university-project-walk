@@ -16,6 +16,8 @@ import android.widget.ScrollView;
 import android.widget.Scroller;
 
 import com.wisteria.projectwalk.R;
+import com.wisteria.projectwalk.models.Manager;
+import com.wisteria.projectwalk.models.YearSliderDelegate;
 
 /**
  * Created by martinkubat on 07/12/15.
@@ -24,6 +26,7 @@ public class SliderLayout extends CustomScrollView {
 
     private RulerLayout rulerLayout;
     private Context context;
+    private YearSliderDelegate delegate = Manager.getInstance();
 
     public SliderLayout(Context context) {
         super(context);
@@ -77,7 +80,7 @@ public class SliderLayout extends CustomScrollView {
                     }
                 }
 
-                Log.i("Year", "Year is "+closestDashLayout.getYear());
+                delegate.setCurrentYear(closestDashLayout.getYear());
 
             }
         });

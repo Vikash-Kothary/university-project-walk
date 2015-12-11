@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.YearSliderDataSource;
+import com.wisteria.projectwalk.models.YearSliderDelegate;
 
 import org.w3c.dom.Text;
 

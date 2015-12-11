@@ -51,8 +51,6 @@ public class YearSlider extends FrameLayout {
                 142
         ));
 
-//        setBackgroundColor(Color.CYAN);
-
         setupSliderLayout();
         setupPointerView();
 
