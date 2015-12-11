@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
 
-        View.OnClickListener listner = new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -116,6 +116,10 @@ public class MainActivity extends Activity implements ManagerCallback {
                 }
             }
         };
+
+        button.setOnClickListener(listener);
+        button2.setOnClickListener(listener);
+        button3.setOnClickListener(listener);
     }
 
     @Override
