@@ -79,6 +79,15 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="4dp" />
 
+            <Button
+                android:layout_width="70dp"
+                android:text="@string/Average_button_name"
+                android:layout_height="30dp"
+                android:id="@+id/button_average"
+                android:textSize="35sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="4dp" />
+
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
