@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class LeaderboardChart extends HorizontalBarChart {
     private LeaderboardDataSource dataSource = Manager.getInstance();
-    private String filterString="";
+    private String filterString = "";
 
 
 
@@ -38,12 +38,9 @@ public class LeaderboardChart extends HorizontalBarChart {
         setDragEnabled(true);
         setPinchZoom(false);
         setDoubleTapToZoomEnabled(false);
-        setVisibleXRangeMinimum(2);
+//        setVisibleXRangeMinimum(2);
 
-
-
-
-        zoom(30, 30, 1, 1);
+        zoom(1, 10, 0, 0);
         setDrawGridBackground(false);
 
         getXAxis().setDrawGridLines(false);
@@ -73,7 +70,7 @@ public class LeaderboardChart extends HorizontalBarChart {
         BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
 
         dataset.setBarSpacePercent(0f);
-        dataset.setValueTextSize(20f);
+        dataset.setValueTextSize(25f);
         dataset.setColor(dataSource.colorForBar());
 
         BarData data = new BarData(labels, dataset);
