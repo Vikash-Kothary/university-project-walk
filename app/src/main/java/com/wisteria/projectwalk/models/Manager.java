@@ -288,6 +288,9 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         Log.i(TAG, "Average entries should be "+averageEntries);
 
         dataHandler.getHashMap().put(Category.Average.type, averageEntries);
+
+
+
     }
 
 

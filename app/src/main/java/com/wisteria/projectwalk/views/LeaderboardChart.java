@@ -46,7 +46,7 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         getAxisLeft().setEnabled(false);
         getAxisRight().setEnabled(false);
-        getXAxis().setTextSize(12f);
+        getXAxis().setTextSize(15f);
 
 
     }
@@ -71,7 +71,7 @@ public class LeaderboardChart extends HorizontalBarChart {
         BarDataSet currentDataSet = new BarDataSet(entries, "Percentage Change of data");
 
         currentDataSet.setBarSpacePercent(0f);
-        currentDataSet.setValueTextSize(20f);
+        currentDataSet.setValueTextSize(14f);
         currentDataSet.setColor(dataSource.colorForBar());
 
         BarData data = new BarData(labels, currentDataSet);
