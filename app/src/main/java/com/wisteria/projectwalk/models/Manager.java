@@ -297,6 +297,8 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
         dataHandler.getHashMap().put(Category.Average.type, averageEntries);
 
 
+        managerCallback.dataIsReady(category, currentYear);
+
 
     }
 
