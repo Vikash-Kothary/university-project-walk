@@ -44,38 +44,38 @@ public class MainActivity extends Activity implements ManagerCallback {
 
 
         LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+        leaderboardContainerLayout.removeAllViews();
         leaderboardChart = new LeaderboardChart(context);
         leaderboardContainerLayout.addView(leaderboardChart);
 
+
         final Spinner spin = (Spinner)findViewById(R.id.spinner);
 
-        LinearLayout CountryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
+        final LinearLayout CountryBarLayout = (LinearLayout) findViewById(R.id.CountryBar_view);
         countryBar = new CountryBar(context);
         CountryBarLayout.addView(countryBar);
-
-
 
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position==0){
+                    countryBar = new CountryBar(context);
+                    CountryBarLayout.removeAllViews();
+                    CountryBarLayout.addView(countryBar);
+                }else {
+                    try {
+                        String cname = spin.getSelectedItem().toString();
 
+                        if (cname != null) {
+                            countryBar.refresh(cname);
+                            countryBar.invalidate();
+                        }
 
-                try {
-                    String cname = spin.getSelectedItem().toString();
+                    } catch (NullPointerException e) {
 
-                    if (cname != null){
-                        countryBar.refresh(cname);
-                        countryBar.invalidate();
                     }
-
-                }catch (NullPointerException e){
-
                 }
-
-
-
-
             }
 
             @Override
@@ -105,15 +105,16 @@ public class MainActivity extends Activity implements ManagerCallback {
                     case R.id.button_fuel:
                         manager.setCategory(Category.ForestArea);
                         break;
-
                     case R.id.button_tree:
                         manager.setCategory(Category.FossilFuel);
                         break;
                 }
-                //manager.setCategory(Category.);
+                LinearLayout leaderboardContainerLayout = (LinearLayout) findViewById(R.id.leaderboard_view);
+                leaderboardContainerLayout.removeAllViews();
+                leaderboardChart = new LeaderboardChart(context);
+                leaderboardContainerLayout.addView(leaderboardChart);
             }
         };
-        //button.setOnClickListener(listner);
     }
 
     @Override

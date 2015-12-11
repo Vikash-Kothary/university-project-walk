@@ -44,7 +44,6 @@ public class Manager implements LeaderboardDataSource, Observer, YearSliderDeleg
 
     Context activity;
     public void setContext(Context context){
-
         activity = context;
     }
 

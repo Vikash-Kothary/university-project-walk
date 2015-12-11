@@ -77,7 +77,7 @@ public class CountryBar extends HorizontalBarChart {
 
         dataset.setBarSpacePercent(0f);
         dataset.setValueTextSize(20f);
-        dataset.setColor(Color.GREEN);
+//        dataset.setColor(Color.parseColor("50E399"));
 
         BarData data = new BarData(labels, dataset);
         setData(data);

@@ -38,6 +38,7 @@ public class YearSlider extends SeekBar {
         }
     };
 
+
     public YearSlider(Context context) {
         super(context);
 

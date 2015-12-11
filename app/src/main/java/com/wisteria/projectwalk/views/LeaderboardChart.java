@@ -24,8 +24,6 @@ public class LeaderboardChart extends HorizontalBarChart {
     private LeaderboardDataSource dataSource = Manager.getInstance();
     private String filterString="";
 
-
-
     public LeaderboardChart(Context context) {
         super(context);
 
@@ -39,9 +37,6 @@ public class LeaderboardChart extends HorizontalBarChart {
         setPinchZoom(false);
         setDoubleTapToZoomEnabled(false);
         setVisibleXRangeMinimum(2);
-
-
-
 
         zoom(30, 30, 1, 1);
         setDrawGridBackground(false);
@@ -61,42 +56,28 @@ public class LeaderboardChart extends HorizontalBarChart {
 
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<BarEntry> pastEntries = new ArrayList<>();
 
         for (int i = 0; i < dataEntries.size(); i++){
 
                 entries.add(new BarEntry((int)dataEntries.get(i).getPercentage(), i));
                 labels.add(dataEntries.get(i).getCountry().getCountryName());
 
+
         }
 
 
-        BarDataSet dataset = new BarDataSet(entries, "Percentage Change of data");
+        // TODO: change tilte of data set
+        BarDataSet currentDataSet = new BarDataSet(entries, "Percentage Change of data");
 
-        dataset.setBarSpacePercent(0f);
-        dataset.setValueTextSize(20f);
-        dataset.setColor(Color.GREEN);
+        currentDataSet.setBarSpacePercent(0f);
+        currentDataSet.setValueTextSize(20f);
+        currentDataSet.setColor(Color.parseColor("#50E399"));
 
-        BarData data = new BarData(labels, dataset);
+        BarData data = new BarData(labels, currentDataSet);
         setData(data);
 
 
         invalidate();
-    }
-
-
-
-
-    public void changeColor(Color color) {
-
-
-
-    }
-
-
-
-    public void filterData(String s) {
-        System.out.println(s);
-        filterString = s;
-        refresh();
     }
 }
