@@ -45,6 +45,9 @@ public class DataHandler extends Observable {
                 "EG.USE.COMM.FO.ZS"
         };
 
+        if (category == Category.Average)
+            return "";
+
         return "/indicators/"+categoryCodes[category.ordinal()]+"?date="+minYear+":"+maxYear+"&format=JSON&per_page=10000";
     }
 
@@ -85,7 +88,7 @@ public class DataHandler extends Observable {
     /**
      * @return A HashMap containing all the collected data.
      */
-    public HashMap getHashMap (){
+    public HashMap<String,HashMap<Integer,ArrayList<Entry>>> getHashMap (){
         return hashMap;
     }
 

@@ -71,7 +71,12 @@ public class Entry {
     }
 
 
-
-
-
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "year=" + year +
+                ", country=" + country +
+                ", percentage=" + percentage +
+                '}';
+    }
 }

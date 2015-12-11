@@ -22,7 +22,10 @@ public class Country {
         return countryName;
     }
 
-
+    @Override
+    public String toString() {
+        return countryName;
+    }
 }
 
 

@@ -6,7 +6,7 @@ package com.wisteria.projectwalk.models;
  */
     public enum Category{
 
-        ForestArea("Forest"), C02Emissions("C02"), FossilFuel("Fuel");
+        ForestArea("Forest"), C02Emissions("C02"), FossilFuel("Fuel"), Average("Average");
 
         String type;
 
