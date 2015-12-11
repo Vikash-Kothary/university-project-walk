@@ -18,7 +18,7 @@ import com.wisteria.projectwalk.models.Manager;
 import com.wisteria.projectwalk.models.ManagerCallback;
 import com.wisteria.projectwalk.views.CountryBar;
 import com.wisteria.projectwalk.views.LeaderboardChart;
-import com.wisteria.projectwalk.views.YearSlider;
+import com.wisteria.projectwalk.views.slider.YearSlider;
 
 /**
  * To be removed, this basic Activity is just to show the backend is working...
@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements ManagerCallback {
     private Context context = this;
     private LeaderboardChart leaderboardChart;
     private CountryBar countryBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +111,8 @@ public class MainActivity extends Activity implements ManagerCallback {
                         manager.setCategory(Category.FossilFuel);
                         break;
                 }
-                //manager.setCategory(Category.);
             }
         };
-        //button.setOnClickListener(listner);
     }
 
     @Override
